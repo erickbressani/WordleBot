@@ -1,6 +1,6 @@
 package com.wordlebot.wordlebot
 
-class Accumulator() {
+class Accumulator {
     private val characters = mutableListOf<Character>()
 
     fun getAll(): List<Character> = characters
@@ -25,7 +25,7 @@ class Accumulator() {
         val existent = characters.firstOrNull { it.value == char }
 
         if (existent == null) {
-            characters.add(Character.InTheCorrectPosition(char, mutableSetOf(position), characters.getInTheCorrectPositionIndexes()))
+            characters.add(Character.InTheCorrectPosition(char, mutableSetOf(position), characters.inTheCorrectPositionIndexes()))
         } else {
             when (existent) {
                 is Character.AtLeastInTheAnswer -> {
@@ -64,7 +64,7 @@ class Accumulator() {
             characters.add(
                 Character.AtLeastInTheAnswer(
                     char,
-                    (mutableListOf(notInThePosition) + characters.getInTheCorrectPositionIndexes()).toMutableSet()
+                    (mutableListOf(notInThePosition) + characters.inTheCorrectPositionIndexes()).toMutableSet()
                 )
             )
         } else {

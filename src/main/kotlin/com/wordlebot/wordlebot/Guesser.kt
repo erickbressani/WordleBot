@@ -10,11 +10,11 @@ class Guesser(
         return findWordWithHighestScore()
     }
 
-    private fun keepOnlyPossibleMatches(characters: List<Character>) {
+    private fun keepOnlyPossibleMatches(characters: List<Character>) = with(characters) {
         possibleWords = possibleWords
-            .filter { word -> !word.containsAny(characters.getNotInTheAnswer()) }
-            .filter { word -> word.filterInTheCorrectPosition(characters.getInTheCorrectSpot())  }
-            .filter { word -> word.filterAtLeastInTheAnswer(characters.getAtLeastInTheAnswer())  }
+            .filterOut(notInTheAnswer())
+            .filter(inTheCorrectSpot())
+            .filter(atLeastInTheAnswer())
     }
 
     private fun findWordWithHighestScore(): String {
@@ -28,17 +28,19 @@ class Guesser(
             .maxByOrNull { it.second }!!.first
     }
 
-    private fun String.containsAny(chars: List<Character>) =
-        any { chars.map { char -> char.value }.contains(it) }
+    private fun Sequence<String>.filterOut(characters: List<Character.NotInTheAnswer>): Sequence<String> =
+        filter { word -> !word.any { characters.map { char -> char.value }.contains(it) } }
 
-    private fun String.filterInTheCorrectPosition(characters: List<Character.InTheCorrectPosition>) =
-        characters.all { has(it) }
+    @JvmName("filterInTheCorrectPosition")
+    private fun Sequence<String>.filter(characters: List<Character.InTheCorrectPosition>): Sequence<String> =
+        this.filter { word -> characters.all { word.has(it) } }
 
     private fun String.has(character: Character.InTheCorrectPosition): Boolean =
         character.positions.all { position -> this[position] == character.value } && !hasAnyInPositionsOf(character.value, character.notInThePosition)
 
-    private fun String.filterAtLeastInTheAnswer(characters: List<Character.AtLeastInTheAnswer>) =
-        characters.all { has(it) }
+    @JvmName("filterAtLeastInTheAnswer")
+    private fun Sequence<String>.filter(characters: List<Character.AtLeastInTheAnswer>): Sequence<String> =
+        filter { word -> characters.all { word.has(it) } }
 
     private fun String.has(character: Character.AtLeastInTheAnswer): Boolean =
         contains(character.value) && !hasAnyInPositionsOf(character.value, character.notInThePosition)

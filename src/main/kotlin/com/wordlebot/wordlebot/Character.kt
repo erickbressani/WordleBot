@@ -8,17 +8,17 @@ sealed interface Character {
     data class NotInTheAnswer(override val value: Char): Character
 }
 
-fun List<Character>.getNotInTheAnswer(): List<Character.NotInTheAnswer> =
+fun List<Character>.notInTheAnswer(): List<Character.NotInTheAnswer> =
     filterIsInstance<Character.NotInTheAnswer>()
 
-fun List<Character>.getInTheCorrectSpot(): List<Character.InTheCorrectPosition> =
+fun List<Character>.inTheCorrectSpot(): List<Character.InTheCorrectPosition> =
     filterIsInstance<Character.InTheCorrectPosition>()
 
-fun List<Character>.getAtLeastInTheAnswer(): List<Character.AtLeastInTheAnswer> =
+fun List<Character>.atLeastInTheAnswer(): List<Character.AtLeastInTheAnswer> =
     filterIsInstance<Character.AtLeastInTheAnswer>()
 
-fun List<Character>.getInTheCorrectPositionIndexes(): MutableSet<Int> =
-    getInTheCorrectSpot().map { it.positions }.flatten().toMutableSet()
+fun List<Character>.inTheCorrectPositionIndexes(): MutableSet<Int> =
+    inTheCorrectSpot().map { it.positions }.flatten().toMutableSet()
 
 fun List<Character>.toCode(): String =
     StringBuilder().apply {

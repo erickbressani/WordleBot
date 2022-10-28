@@ -31,7 +31,7 @@ class WordleBotApplicationTests {
 		possibleWords.mapIndexed { index, correctAnswer ->
 			runAsync(index, correctAnswer, possibleWords)
 		}.let {
-			runBlocking(Dispatchers.Unconfined) {
+			runBlocking(Dispatchers.IO) {
 				it.forEach {
 					it.await().let { result ->
 						when (result) {
