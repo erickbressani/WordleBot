@@ -1,8 +1,6 @@
 package com.wordlebot.wordlebot
 
-class Guesser(
-    private var possibleWords: Sequence<String>
-) {
+class Guesser(private var possibleWords: Sequence<String>) {
     fun getPossibleAnswersCount() = possibleWords.count()
 
     fun guess(characters: List<Character>): String {
@@ -17,16 +15,8 @@ class Guesser(
             .filter(atLeastInTheAnswer())
     }
 
-    private fun findWordWithHighestScore(): String {
-        val wordScoreMap = mutableMapOf<String, Int>()
-        val scoreBoard = ScoreBoard.create(possibleWords)
-
-        possibleWords.forEach { word -> wordScoreMap[word] = scoreBoard.getScoreOf(word) }
-
-        return wordScoreMap
-            .toList()
-            .maxByOrNull { it.second }!!.first
-    }
+    private fun findWordWithHighestScore(): String =
+        ScoreBoard(possibleWords).getWordWithHighestScore()
 
     private fun Sequence<String>.filterOut(characters: List<Character.NotInTheAnswer>): Sequence<String> =
         filter { word -> !word.any { characters.map { char -> char.value }.contains(it) } }

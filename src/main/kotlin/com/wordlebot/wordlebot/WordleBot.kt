@@ -56,6 +56,6 @@ class WordleBot(
     private fun finish() {
         println("Finish!")
         println("Characters Used:")
-        println(accumulator.getAll().toCode())
+        println(accumulator.getAll().toCodeSnippet())
     }
 }

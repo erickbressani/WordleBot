@@ -1,7 +1,25 @@
 package com.wordlebot.wordlebot
 
-class ScoreBoard private constructor(private val scorePerChar: Map<Char, CharScore>) {
-    fun getScoreOf(word: String): Int {
+class ScoreBoard(words: Sequence<String>) {
+    private val scorePerWord: Map<String, Int>
+    private val scorePerChar: Map<Char, CharScore>
+
+    init {
+        scorePerChar = words
+            .toCharDetailsMap()
+            .toCharScoreMap()
+
+        scorePerWord = mutableMapOf<String, Int>().apply {
+            words.forEach { word -> this[word] = getScoreOf(word) }
+        }
+    }
+
+    fun getWordWithHighestScore() =
+        scorePerWord
+            .toList()
+            .maxByOrNull { it.second }!!.first
+
+    private fun getScoreOf(word: String): Int {
         var score = word.map { it }.distinct().sumOf { getCharScoreBy(it).foundCount } * 2
         score += word.mapIndexed { index, char -> getCharScoreBy(char).scoreIn(index) }.sum()
         return score
@@ -11,14 +29,6 @@ class ScoreBoard private constructor(private val scorePerChar: Map<Char, CharSco
         scorePerChar[char]!!
 
     companion object {
-        fun create(words: Sequence<String>): ScoreBoard =
-            words.toScoreBoard()
-
-        private fun Sequence<String>.toScoreBoard(): ScoreBoard =
-            toCharDetailsMap()
-                .toCharScoreMap()
-                .let(::ScoreBoard)
-
         private fun Sequence<String>.toCharDetailsMap(): Map<Char, List<CharDetail>> =
             map { word -> word.mapIndexed { index, char -> CharDetail(char, CharPosition.values()[index], word) } }
                 .flatten()

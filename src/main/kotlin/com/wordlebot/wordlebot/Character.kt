@@ -20,22 +20,22 @@ fun List<Character>.atLeastInTheAnswer(): List<Character.AtLeastInTheAnswer> =
 fun List<Character>.inTheCorrectPositionIndexes(): MutableSet<Int> =
     inTheCorrectSpot().map { it.positions }.flatten().toMutableSet()
 
-fun List<Character>.toCode(): String =
+fun List<Character>.toCodeSnippet(): String =
     StringBuilder().apply {
         append("listOf(")
-        this@toCode.forEach {appendLine("${it.toCode()},") }
+        this@toCodeSnippet.forEach { appendLine("${it.toCodeSnippet()},") }
         appendLine(")")
     }.toString()
 
-fun Character.toCode() = when(this) {
-    is Character.AtLeastInTheAnswer -> "Character.AtLeastInTheAnswer('$value', ${notInThePosition.toCode()})"
-    is Character.InTheCorrectPosition -> "Character.InTheCorrectPosition('$value', ${positions.toCode()}, ${notInThePosition.toCode()})"
+fun Character.toCodeSnippet() = when(this) {
+    is Character.AtLeastInTheAnswer -> "Character.AtLeastInTheAnswer('$value', ${notInThePosition.toCodeSnippet()})"
+    is Character.InTheCorrectPosition -> "Character.InTheCorrectPosition('$value', ${positions.toCodeSnippet()}, ${notInThePosition.toCodeSnippet()})"
     is Character.NotInTheAnswer -> "Character.NotInTheAnswer('$value')"
 }
 
-private fun MutableSet<Int>.toCode():String =
+private fun MutableSet<Int>.toCodeSnippet():String =
     StringBuilder().apply {
         append("mutableSetOf(")
-        this@toCode.forEach { append("$it${if (it == this@toCode.last()) "" else ", "}") }
+        this@toCodeSnippet.forEach { append("$it${if (it == this@toCodeSnippet.last()) "" else ", "}") }
         append(")")
     }.toString()
