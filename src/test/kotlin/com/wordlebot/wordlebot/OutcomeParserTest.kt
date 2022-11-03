@@ -5,12 +5,12 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
-internal class AccumulatorTest {
-    private val accumulator = Accumulator()
+internal class OutcomeParserTest {
+    private val outcomeParser = OutcomeParser()
 
     @Test
     fun `should add NotInTheAnswer`() {
-        accumulator.add(
+        outcomeParser.add(
             wordWithUniqueLetters,
             listOf(
                 Outcome.NotInTheAnswer,
@@ -21,7 +21,7 @@ internal class AccumulatorTest {
             )
         )
 
-        accumulator.getAll().let { characters ->
+        outcomeParser.getAllParsedCharacters().let { characters ->
             characters.shouldHaveSize(5)
             characters.all { it is Character.NotInTheAnswer } shouldBe true
             wordWithUniqueLetters.forEachIndexed { index, char -> characters[index].value shouldBe char }
@@ -30,7 +30,7 @@ internal class AccumulatorTest {
 
     @Test
     fun `should add AtLeastInTheAnswer`() {
-        accumulator.add(
+        outcomeParser.add(
             wordWithUniqueLetters,
             listOf(
                 Outcome.AtLeastInTheAnswer,
@@ -41,7 +41,7 @@ internal class AccumulatorTest {
             )
         )
 
-        accumulator.getAll().let { characters ->
+        outcomeParser.getAllParsedCharacters().let { characters ->
             characters.shouldHaveSize(5)
             characters.all { it is Character.AtLeastInTheAnswer }  shouldBe true
             wordWithUniqueLetters.forEachIndexed { index, char ->
@@ -53,7 +53,7 @@ internal class AccumulatorTest {
 
     @Test
     fun `should add InTheCorrectPosition`() {
-        accumulator.add(
+        outcomeParser.add(
             wordWithUniqueLetters,
             listOf(
                 Outcome.InTheCorrectPosition,
@@ -64,7 +64,7 @@ internal class AccumulatorTest {
             )
         )
 
-        accumulator.getAll().let { characters ->
+        outcomeParser.getAllParsedCharacters().let { characters ->
             characters.shouldHaveSize(5)
             characters.all { it is Character.InTheCorrectPosition }  shouldBe true
             wordWithUniqueLetters.forEachIndexed { index, char ->
@@ -77,7 +77,7 @@ internal class AccumulatorTest {
 
     @Test
     fun `should add only one InTheCorrectPosition per character`() {
-        accumulator.add(
+        outcomeParser.add(
             wordWithRepeatedLetters,
             listOf(
                 Outcome.InTheCorrectPosition,
@@ -88,7 +88,7 @@ internal class AccumulatorTest {
             )
         )
 
-        accumulator.getAll().let { characters ->
+        outcomeParser.getAllParsedCharacters().let { characters ->
             characters.shouldHaveSize(2)
             characters.all { it is Character.InTheCorrectPosition }  shouldBe true
 
@@ -108,7 +108,7 @@ internal class AccumulatorTest {
 
     @Test
     fun `should not add NotInTheAnswer when there is another with same value`() {
-        accumulator.add(
+        outcomeParser.add(
             wordWithRepeatedAndUniqueLetters,
             listOf(
                 Outcome.NotInTheAnswer,
@@ -119,7 +119,7 @@ internal class AccumulatorTest {
             )
         )
 
-        accumulator.getAll().let { characters ->
+        outcomeParser.getAllParsedCharacters().let { characters ->
             characters.filter { it.value == 'u' } should {
                 it.shouldHaveSize(1)
                 (it[0] as Character.InTheCorrectPosition).positions shouldBe listOf(1)
@@ -130,7 +130,7 @@ internal class AccumulatorTest {
 
     @Test
     fun `should remove NotInTheAnswer when there is somewhere in the word the value`() {
-        accumulator.add(
+        outcomeParser.add(
             wordWithRepeatedAndUniqueLetters,
             listOf(
                 Outcome.NotInTheAnswer,
@@ -141,7 +141,7 @@ internal class AccumulatorTest {
             )
         )
 
-        accumulator.getAll().let { characters ->
+        outcomeParser.getAllParsedCharacters().let { characters ->
             characters.filter { it.value == 'u' } should {
                 it.shouldHaveSize(1)
                 (it[0] as Character.InTheCorrectPosition).positions shouldBe listOf(3)
@@ -152,7 +152,7 @@ internal class AccumulatorTest {
 
     @Test
     fun `should add only InTheCorrectPosition per character`() {
-        accumulator.add(
+        outcomeParser.add(
             wordWithRepeatedLetters,
             listOf(
                 Outcome.AtLeastInTheAnswer,
@@ -163,7 +163,7 @@ internal class AccumulatorTest {
             )
         )
 
-        accumulator.getAll().let { characters ->
+        outcomeParser.getAllParsedCharacters().let { characters ->
             characters.shouldHaveSize(2)
             characters.all { it is Character.InTheCorrectPosition }  shouldBe true
 
@@ -185,7 +185,7 @@ internal class AccumulatorTest {
     fun `should add 10 characters`() {
         // answer = axhbj
 
-        accumulator.add(
+        outcomeParser.add(
             abcde,
             listOf(
                 Outcome.InTheCorrectPosition,
@@ -196,7 +196,7 @@ internal class AccumulatorTest {
             )
         )
 
-        accumulator.add(
+        outcomeParser.add(
             fghij,
             listOf(
                 Outcome.NotInTheAnswer,
@@ -207,7 +207,7 @@ internal class AccumulatorTest {
             )
         )
 
-        accumulator.getAll().sortedBy { it.value }.let { characters ->
+        outcomeParser.getAllParsedCharacters().sortedBy { it.value }.let { characters ->
             characters.shouldHaveSize(10)
 
             (characters[2] as Character.NotInTheAnswer).value shouldBe 'c'

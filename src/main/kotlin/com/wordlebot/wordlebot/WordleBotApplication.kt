@@ -11,7 +11,7 @@ fun main(args: Array<String>) {
 	runApplication<WordleBotApplication>(*args)
 
 	getPossibleWords().let { possibleWords ->
-		WordleBot(possibleWords, Accumulator(), Guesser(possibleWords)).run()
+		WordleBot(possibleWords, OutcomeParser(), Guesser(possibleWords)).run()
 	}
 }
 

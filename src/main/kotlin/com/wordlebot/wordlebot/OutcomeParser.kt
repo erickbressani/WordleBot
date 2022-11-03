@@ -1,9 +1,9 @@
 package com.wordlebot.wordlebot
 
-class Accumulator {
+class OutcomeParser {
     private val characters = mutableListOf<Character>()
 
-    fun getAll(): List<Character> = characters
+    fun getAllParsedCharacters(): List<Character> = characters
 
     fun add(guessedWord: String, outcomes: List<Outcome>) {
         (0 until 5).forEach { index ->
@@ -18,7 +18,7 @@ class Accumulator {
 
         characters
             .filterIsInstance<Character.AtLeastInTheAnswer>()
-            .forEach { it.tryConvertToCorrect() }
+            .forEach { it.tryConvertToInTheCorrectPosition() }
     }
 
     private fun addInTheCorrectPosition(char: Char, position: Int) {
@@ -71,12 +71,12 @@ class Accumulator {
             when (existent) {
                 is Character.AtLeastInTheAnswer -> existent.also { it.notInThePosition.add(notInThePosition) }
                 is Character.InTheCorrectPosition -> existent.also { it.notInThePosition.add(notInThePosition) }
-                is Character.NotInTheAnswer -> throw InvalidCharactersInAccumulatorException()
+                is Character.NotInTheAnswer -> throw InvalidCharactersInParserException()
             }
         }
     }
 
-    private fun Character.AtLeastInTheAnswer.tryConvertToCorrect() {
+    private fun Character.AtLeastInTheAnswer.tryConvertToInTheCorrectPosition() {
         if (notInThePosition.count() == 4) {
             characters.remove(this)
             characters.add(Character.InTheCorrectPosition(value, allPositionsBut(notInThePosition), notInThePosition))
@@ -110,4 +110,4 @@ enum class Outcome {
     NotInTheAnswer
 }
 
-class InvalidCharactersInAccumulatorException() : Exception("Invalid Characters In Accumulator")
+class InvalidCharactersInParserException : Exception("Invalid Characters In OutcomeParser")

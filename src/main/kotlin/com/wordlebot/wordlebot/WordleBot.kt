@@ -2,7 +2,7 @@ package com.wordlebot.wordlebot
 
 class WordleBot(
     private val possibleWords: Sequence<String>,
-    private val accumulator: Accumulator,
+    private val outcomeParser: OutcomeParser,
     private val guesser: Guesser
 ) {
     fun run() {
@@ -10,7 +10,7 @@ class WordleBot(
 
         try {
             (1..6).forEach { tryNumber ->
-                guesser.guess(accumulator.getAll()).let { word ->
+                guesser.guess(outcomeParser.getAllParsedCharacters()).let { word ->
                     println("$tryNumber - Possible Answers: ${guesser.getPossibleAnswersCount()}")
                     println(word)
 
@@ -19,7 +19,7 @@ class WordleBot(
                             if (it == null) {
                                 finish()
                             } else {
-                                accumulator.add(word, it)
+                                outcomeParser.add(word, it)
                             }
                         }
                     } else {
@@ -56,6 +56,6 @@ class WordleBot(
     private fun finish() {
         println("Finish!")
         println("Characters Used:")
-        println(accumulator.getAll().toCodeSnippet())
+        println(outcomeParser.getAllParsedCharacters().toCodeSnippet())
     }
 }

@@ -56,11 +56,11 @@ class WordleBotApplicationTests {
 
 	@OptIn(DelicateCoroutinesApi::class)
 	private fun runAsync(index: Int, correctAnswer: String, possibleWords: Sequence<String>) = GlobalScope.async {
-		val accumulator = Accumulator()
+		val outcomeParser = OutcomeParser()
 		val guesser = Guesser(mutableListOf<String>().apply { addAll(possibleWords) }.asSequence())
 
 		for (tryNumber in 0..5) {
-			val word = guesser.guess(accumulator.getAll())
+			val word = guesser.guess(outcomeParser.getAllParsedCharacters())
 
 			if (word == correctAnswer) {
 				if (tryNumber == 5 && guesser.getPossibleAnswersCount() > 1) {
@@ -75,7 +75,7 @@ class WordleBotApplicationTests {
 				return@async Result.Wrong
 			}
 
-			accumulator.add(word, word.getOutcomesBasedOn(correctAnswer))
+			outcomeParser.add(word, word.getOutcomesBasedOn(correctAnswer))
 		}
 
 		return@async Result.Wrong

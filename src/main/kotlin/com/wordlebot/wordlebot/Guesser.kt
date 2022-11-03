@@ -23,7 +23,7 @@ class Guesser(private var possibleWords: Sequence<String>) {
 
     @JvmName("filterInTheCorrectPosition")
     private fun Sequence<String>.filter(characters: List<Character.InTheCorrectPosition>): Sequence<String> =
-        this.filter { word -> characters.all { word.has(it) } }
+        filter { word -> characters.all { word.has(it) } }
 
     private fun String.has(character: Character.InTheCorrectPosition): Boolean =
         character.positions.all { position -> this[position] == character.value } && !hasAnyInPositionsOf(character.value, character.notInThePosition)
