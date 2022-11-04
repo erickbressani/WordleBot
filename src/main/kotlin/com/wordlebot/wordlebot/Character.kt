@@ -3,22 +3,18 @@ package com.wordlebot.wordlebot
 sealed interface Character {
     val value: Char
 
-    data class AtLeastInTheAnswer(override val value: Char, val notInThePosition: MutableSet<Int>): Character
-    data class InTheCorrectPosition(override val value: Char, val positions: MutableSet<Int>, val notInThePosition: MutableSet<Int>): Character
+    data class InTheAnswer(override val value: Char, val positions: MutableSet<Int>, val notInThePosition: MutableSet<Int>): Character
     data class NotInTheAnswer(override val value: Char): Character
 }
 
 fun List<Character>.notInTheAnswer(): List<Character.NotInTheAnswer> =
     filterIsInstance<Character.NotInTheAnswer>()
 
-fun List<Character>.inTheCorrectSpot(): List<Character.InTheCorrectPosition> =
-    filterIsInstance<Character.InTheCorrectPosition>()
+fun List<Character>.inTheAnswer(): List<Character.InTheAnswer> =
+    filterIsInstance<Character.InTheAnswer>()
 
-fun List<Character>.atLeastInTheAnswer(): List<Character.AtLeastInTheAnswer> =
-    filterIsInstance<Character.AtLeastInTheAnswer>()
-
-fun List<Character>.inTheCorrectPositionIndexes(): MutableSet<Int> =
-    inTheCorrectSpot().map { it.positions }.flatten().toMutableSet()
+fun List<Character>.inTheAnswerPositions(): MutableSet<Int> =
+    inTheAnswer().map { it.positions }.flatten().toMutableSet()
 
 fun List<Character>.toCodeSnippet(): String =
     StringBuilder().apply {
@@ -28,8 +24,7 @@ fun List<Character>.toCodeSnippet(): String =
     }.toString()
 
 fun Character.toCodeSnippet() = when(this) {
-    is Character.AtLeastInTheAnswer -> "Character.AtLeastInTheAnswer('$value', ${notInThePosition.toCodeSnippet()})"
-    is Character.InTheCorrectPosition -> "Character.InTheCorrectPosition('$value', ${positions.toCodeSnippet()}, ${notInThePosition.toCodeSnippet()})"
+    is Character.InTheAnswer -> "Character.InTheAnswer('$value', ${positions.toCodeSnippet()}, ${notInThePosition.toCodeSnippet()})"
     is Character.NotInTheAnswer -> "Character.NotInTheAnswer('$value')"
 }
 
