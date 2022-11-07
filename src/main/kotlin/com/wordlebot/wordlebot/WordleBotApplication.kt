@@ -10,12 +10,12 @@ class WordleBotApplication
 fun main(args: Array<String>) {
 	runApplication<WordleBotApplication>(*args)
 
-	getPossibleWords().let { possibleWords ->
-		WordleBot(possibleWords, OutcomeParser(), Guesser(possibleWords)).run()
+	getPossibleAnswers().let { possibleAnswers ->
+		WordleBot(possibleAnswers, OutcomeParser(), Guesser(possibleAnswers)).run()
 	}
 }
 
-fun getPossibleWords(): Sequence<String> =
+fun getPossibleAnswers(): Sequence<String> =
 	File("/Users/erickbressani/Documents/git/erick/WordleBot/src/main/kotlin/com/wordlebot/WordleBot/wordle-words")
 		.bufferedReader()
 		.readText()

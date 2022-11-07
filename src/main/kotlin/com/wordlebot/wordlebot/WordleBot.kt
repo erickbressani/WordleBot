@@ -10,16 +10,16 @@ class WordleBot(
 
         try {
             (1..6).forEach { tryNumber ->
-                guesser.guess(outcomeParser.getAllParsedCharacters()).let { word ->
-                    println("$tryNumber - Possible Answers: ${guesser.getPossibleAnswersCount()}")
-                    println(word)
+                guesser.guess(outcomeParser.getAllParsedCharacters()).let { answer ->
+                    println("$tryNumber - Possible Answers: ${answer.possibleAnswersCount}")
+                    println(answer.guessedWord)
 
                     if (tryNumber < 6) {
                         readOutcomes().let {
                             if (it == null) {
                                 finish()
                             } else {
-                                outcomeParser.add(word, it)
+                                outcomeParser.add(answer.guessedWord, it)
                             }
                         }
                     } else {

@@ -1,11 +1,12 @@
 package com.wordlebot.wordlebot
 
 class Guesser(private var possibleWords: Sequence<String>) {
-    fun getPossibleAnswersCount() = possibleWords.count()
-
-    fun guess(characters: List<Character>): String {
+    fun guess(characters: List<Character>): Answer {
         keepOnlyPossibleMatches(characters)
-        return findWordWithHighestScore()
+
+        return findWordWithHighestScore().let {
+            Answer(it, possibleWords.count())
+        }
     }
 
     private fun keepOnlyPossibleMatches(characters: List<Character>) = with(characters) {
@@ -37,11 +38,13 @@ class Guesser(private var possibleWords: Sequence<String>) {
 
     private fun String.hasAnyInPositionsOf(value: Char, positions: Set<Int>): Boolean {
         forEachIndexed { index, char ->
-            if (positions.contains(index) && char == value) return true
+            if (positions.contains(index) && char == value) {
+                return true
+            }
         }
 
         return false
     }
 }
 
-
+data class Answer(val guessedWord: String, val possibleAnswersCount: Int)
