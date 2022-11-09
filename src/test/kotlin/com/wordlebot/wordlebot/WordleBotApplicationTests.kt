@@ -1,9 +1,6 @@
 package com.wordlebot.wordlebot
 
 import java.io.File
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -14,7 +11,6 @@ import kotlin.system.measureTimeMillis
 @SpringBootTest
 class WordleBotApplicationTests {
 	fun getPossibleWords(): Sequence<String> =
-//		listOf("beard").asSequence()
 		File("/Users/erickbressani/Documents/git/erick/WordleBot/src/main/kotlin/com/wordlebot/WordleBot/wordle-words")
 			.bufferedReader()
 			.readText()
@@ -31,7 +27,6 @@ class WordleBotApplicationTests {
 		val possibleWords = getPossibleWords()
 
 		possibleWords.forEach { correctAnswer ->
-			println(correctAnswer)
 			run(correctAnswer, possibleWords)
 				.let {
 					when (it) {

@@ -47,7 +47,7 @@ class ScoreBoard(words: Sequence<String>) {
             }.toMap()
 
         private fun Map.Entry<Char, List<CharDetail>>.countOnPosition(charPosition: CharPosition): Int =
-            value.count { it.isPosition(charPosition) }
+            value.count { it.isOnPosition(charPosition) }
     }
 }
 
@@ -71,7 +71,7 @@ data class CharScore(
 }
 
 data class CharDetail(val value: Char, val position: CharPosition, val fromWord: String) {
-    fun isPosition(charPosition: CharPosition): Boolean =
+    fun isOnPosition(charPosition: CharPosition): Boolean =
         position == charPosition
 }
 

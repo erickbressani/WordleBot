@@ -12,7 +12,7 @@ class OutcomeParser {
             when (outcomes[index]) {
                 Outcome.InTheCorrectPosition -> addInTheCorrectPosition(char, index)
                 Outcome.AtLeastInTheAnswer -> addAtLeastInTheAnswer(char, index)
-                Outcome.NotInTheAnswer -> addNotInTheAnswer(char, index)
+                Outcome.NotInTheAnswer -> addNotInTheAnswer(char)
             }
         }
     }
@@ -56,7 +56,7 @@ class OutcomeParser {
                 Character.InTheAnswer(
                     char,
                     mutableSetOf(),
-                    (mutableListOf(notInThePosition) + characters.inTheAnswerPositions()).toMutableSet()
+                    (mutableSetOf(notInThePosition) + characters.inTheAnswerPositions()).toMutableSet()
                 )
             )
         } else {
@@ -67,7 +67,7 @@ class OutcomeParser {
         }
     }
 
-    private fun addNotInTheAnswer(char: Char, notInThePosition: Int) {
+    private fun addNotInTheAnswer(char: Char) {
         val existent = characters.firstOrNull { it.value == char }
 
         if (existent == null) {

@@ -1,31 +1,25 @@
 package com.wordlebot.wordlebot
 
-class Guesser(private var possibleWords: Sequence<String>) {
+class Guesser(private var possibleAnswers: Sequence<String>) {
     fun guess(characters: List<Character>): Answer {
-        keepOnlyPossibleMatches(characters)
-
-        return Answer(findWordWithHighestScore(), possibleWords.count())
+        keepOnlyMatches(characters)
+        return Answer(findWordWithHighestScore(), possibleAnswers.count())
     }
 
-    private fun keepOnlyPossibleMatches(characters: List<Character>) = with(characters) {
-        possibleWords = possibleWords
+    private fun keepOnlyMatches(characters: List<Character>) = with(characters) {
+        possibleAnswers = possibleAnswers
             .filterOut(notInTheAnswer())
-            .filter(inTheAnswer()).toList().asSequence()
+            .filter(inTheAnswer())
     }
 
     private fun findWordWithHighestScore(): String =
-        ScoreBoard(possibleWords).getWordWithHighestScore()
+        ScoreBoard(possibleAnswers).getWordWithHighestScore()
 
     private fun Sequence<String>.filterOut(characters: List<Character.NotInTheAnswer>): Sequence<String> =
         filter { word -> !word.any { characters.map { char -> char.value }.contains(it) } }
 
-    @JvmName("filterAtLeastInTheAnswer")
     private fun Sequence<String>.filter(characters: List<Character.InTheAnswer>): Sequence<String> =
         filter { word -> characters.all { word.has(it) } }
-
-    private fun String.has2(character: Character.InTheAnswer): Boolean =
-        (character.positions.all { position -> this[position] == character.value } && !hasAnyInPositionsOf(character.value, character.notInThePosition)) &&
-                (contains(character.value) && !hasAnyInPositionsOf(character.value, character.notInThePosition))
 
     private fun String.has(character: Character.InTheAnswer): Boolean =
         (character.positions.isEmpty() || character.positions.all { position -> this[position] == character.value })
@@ -34,7 +28,9 @@ class Guesser(private var possibleWords: Sequence<String>) {
 
     private fun String.hasAnyInPositionsOf(value: Char, positions: Set<Int>): Boolean {
         forEachIndexed { index, char ->
-            if (positions.contains(index) && char == value) return true
+            if (positions.contains(index) && char == value) {
+                return true
+            }
         }
 
         return false
