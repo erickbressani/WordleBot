@@ -12,20 +12,16 @@ class OutcomeParser {
             when (outcomes[index]) {
                 Outcome.InTheCorrectPosition -> addInTheCorrectPosition(char, index)
                 Outcome.AtLeastInTheAnswer -> addAtLeastInTheAnswer(char, index)
-                Outcome.NotInTheAnswer -> addNotInTheAnswer(char)
+                Outcome.NotInTheAnswer -> addNotInTheAnswer(char, index)
             }
         }
-
-        characters
-            .filterIsInstance<Character.InTheAnswer>()
-            .forEach { it.tryConvertToInTheCorrectPosition() }
     }
 
     private fun addInTheCorrectPosition(char: Char, position: Int) {
         val existent = characters.firstOrNull { it.value == char }
 
         if (existent == null) {
-            characters.add(Character.InTheAnswer(char, mutableSetOf(position), characters.inTheAnswerPositions()))
+            characters.add(Character.InTheAnswer(char, mutableSetOf(position), characters.inTheAnswerPositions(besidesOf = position)))
         } else {
             when (existent) {
                 is Character.InTheAnswer -> existent.positions.add(position)
@@ -71,14 +67,7 @@ class OutcomeParser {
         }
     }
 
-    private fun Character.InTheAnswer.tryConvertToInTheCorrectPosition() {
-        if (notInThePosition.count() == 4) {
-            characters.remove(this)
-            characters.add(Character.InTheAnswer(value, allPositionsBut(notInThePosition), notInThePosition))
-        }
-    }
-
-    private fun addNotInTheAnswer(char: Char) {
+    private fun addNotInTheAnswer(char: Char, notInThePosition: Int) {
         val existent = characters.firstOrNull { it.value == char }
 
         if (existent == null) {
@@ -86,7 +75,12 @@ class OutcomeParser {
         } else {
             when (existent) {
                 is Character.InTheAnswer -> {
-                    existent.also { it.notInThePosition.addAll(allPositionsBut(it.positions)) }
+                    if (existent.positions.any()) {
+                        existent.notInThePosition.addAll(allPositionsBut(existent.positions))
+                    } else {
+                        characters.remove(existent)
+                        characters.add(Character.NotInTheAnswer(char))
+                    }
                 }
                 is Character.NotInTheAnswer -> {}
             }

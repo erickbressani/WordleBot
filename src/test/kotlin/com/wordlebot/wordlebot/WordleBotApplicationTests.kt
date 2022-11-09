@@ -14,12 +14,14 @@ import kotlin.system.measureTimeMillis
 @SpringBootTest
 class WordleBotApplicationTests {
 	fun getPossibleWords(): Sequence<String> =
+//		listOf("beard").asSequence()
 		File("/Users/erickbressani/Documents/git/erick/WordleBot/src/main/kotlin/com/wordlebot/WordleBot/wordle-words")
 			.bufferedReader()
 			.readText()
 			.split("\n")
 			.asSequence()
 			.filter { it.isNotEmpty() }
+
 	@Test
 	fun test() {
 		var correctCount = 0
@@ -28,23 +30,19 @@ class WordleBotApplicationTests {
 		val wrongAnswers = mutableListOf<String>()
 		val possibleWords = getPossibleWords()
 
-		possibleWords.mapIndexed { index, correctAnswer ->
-			runAsync(index, correctAnswer, possibleWords)
-		}.let {
-			runBlocking(Dispatchers.IO) {
-				it.forEach {
-					it.await().let { result ->
-						when (result) {
-							Result.Correct -> correctCount++
-							Result.LucklyCorrect -> {
-								correctCount++
-								pureLuckCount++
-							}
-							Result.Wrong -> wrongCount++
+		possibleWords.forEach { correctAnswer ->
+			println(correctAnswer)
+			run(correctAnswer, possibleWords)
+				.let {
+					when (it) {
+						Result.Correct -> correctCount++
+						Result.LucklyCorrect -> {
+							correctCount++
+							pureLuckCount++
 						}
+						Result.Wrong -> wrongCount++
 					}
 				}
-			}
 		}
 
 		println("pure luck: $pureLuckCount")
@@ -54,8 +52,7 @@ class WordleBotApplicationTests {
 		println(wrongAnswers)
 	}
 
-	@OptIn(DelicateCoroutinesApi::class)
-	private fun runAsync(index: Int, correctAnswer: String, possibleWords: Sequence<String>) = GlobalScope.async {
+	private fun run(correctAnswer: String, possibleWords: Sequence<String>): Result {
 		val outcomeParser = OutcomeParser()
 		val guesser = Guesser(mutableListOf<String>().apply { addAll(possibleWords) }.asSequence())
 
@@ -63,22 +60,19 @@ class WordleBotApplicationTests {
 			val answer = guesser.guess(outcomeParser.getAllParsedCharacters())
 
 			if (answer.guessedWord == correctAnswer) {
-				if (tryNumber == 5 && answer.possibleAnswersCount > 1) {
-//					println("$index CORRECT: $correctAnswer | ${guesser.getPossibleAnswersCount()}")
-					return@async Result.LucklyCorrect
+				return if (tryNumber == 5 && answer.possibleAnswersCount > 1) {
+					Result.LucklyCorrect
 				} else {
-//					println("$index CORRECT: $correctAnswer | $tryNumber")
-					return@async Result.Correct
+					Result.Correct
 				}
 			} else if (tryNumber == 5) {
-//				println("$index WRONG: $correctAnswer | ${guesser.getPossibleAnswersCount()}")
-				return@async Result.Wrong
+				return Result.Wrong
 			}
 
 			outcomeParser.add(answer.guessedWord, answer.guessedWord.getOutcomesBasedOn(correctAnswer))
 		}
 
-		return@async Result.Wrong
+		return Result.Wrong
 	}
 
 	@Test
