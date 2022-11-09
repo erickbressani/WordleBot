@@ -60,10 +60,10 @@ class WordleBotApplicationTests {
 		val guesser = Guesser(mutableListOf<String>().apply { addAll(possibleWords) }.asSequence())
 
 		for (tryNumber in 0..5) {
-			val word = guesser.guess(outcomeParser.getAllParsedCharacters())
+			val answer = guesser.guess(outcomeParser.getAllParsedCharacters())
 
-			if (word == correctAnswer) {
-				if (tryNumber == 5 && guesser.getPossibleAnswersCount() > 1) {
+			if (answer.guessedWord == correctAnswer) {
+				if (tryNumber == 5 && answer.possibleAnswersCount > 1) {
 //					println("$index CORRECT: $correctAnswer | ${guesser.getPossibleAnswersCount()}")
 					return@async Result.LucklyCorrect
 				} else {
@@ -75,7 +75,7 @@ class WordleBotApplicationTests {
 				return@async Result.Wrong
 			}
 
-			outcomeParser.add(word, word.getOutcomesBasedOn(correctAnswer))
+			outcomeParser.add(answer.guessedWord, answer.guessedWord.getOutcomesBasedOn(correctAnswer))
 		}
 
 		return@async Result.Wrong
