@@ -15,10 +15,9 @@ fun main(args: Array<String>) {
 	}
 }
 
-fun getPossibleAnswers(): Sequence<String> =
+fun getPossibleAnswers(): List<String> =
 	File("/Users/erickbressani/Documents/git/erick/WordleBot/src/main/kotlin/com/wordlebot/WordleBot/wordle-words")
 		.bufferedReader()
 		.readText()
 		.split("\n")
-		.asSequence()
 		.filter { it.isNotEmpty() }

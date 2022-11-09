@@ -4,13 +4,12 @@ import java.io.File
 import org.junit.jupiter.api.Test
 
 internal class GuesserTest {
-    fun getPossibleWords(): Sequence<String> =
+    fun getPossibleWords(): List<String> =
         File("/Users/erickbressani/Documents/git/erick/WordleBot/src/main/kotlin/com/wordlebot/WordleBot/wordle-words")
             .bufferedReader()
             .readText()
             .split("\n")
             .filter { it.isNotEmpty() }
-            .asSequence()
 
     private val guesser = Guesser(getPossibleWords())
 
@@ -29,15 +28,3 @@ internal class GuesserTest {
 //        guesser.guess(characters, TryNumber.Third)
     }
 }
-
-
-/*
-Possible Answers: 14855
-soare
-..xxx
-Possible Answers: 61
-soils
-..xxx
-Possible Answers: 0
-
- */

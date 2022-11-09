@@ -1,6 +1,6 @@
 package com.wordlebot.wordlebot
 
-class Guesser(private var possibleAnswers: Sequence<String>) {
+class Guesser(private var possibleAnswers: List<String>) {
     fun guess(characters: List<Character>): Answer {
         keepOnlyMatches(characters)
         return Answer(findWordWithHighestScore(), possibleAnswers.count())
@@ -8,22 +8,22 @@ class Guesser(private var possibleAnswers: Sequence<String>) {
 
     private fun keepOnlyMatches(characters: List<Character>) = with(characters) {
         possibleAnswers = possibleAnswers
-            .filterOut(notInTheAnswer())
             .filter(inTheAnswer())
+            .filterOut(notInTheAnswer())
     }
 
     private fun findWordWithHighestScore(): String =
         ScoreBoard(possibleAnswers).getWordWithHighestScore()
 
-    private fun Sequence<String>.filterOut(characters: List<Character.NotInTheAnswer>): Sequence<String> =
+    private fun List<String>.filterOut(characters: List<Character.NotInTheAnswer>): List<String> =
         filter { word -> !word.any { characters.map { char -> char.value }.contains(it) } }
 
-    private fun Sequence<String>.filter(characters: List<Character.InTheAnswer>): Sequence<String> =
+    private fun List<String>.filter(characters: List<Character.InTheAnswer>): List<String> =
         filter { word -> characters.all { word.has(it) } }
 
     private fun String.has(character: Character.InTheAnswer): Boolean =
-        (character.positions.isEmpty() || character.positions.all { position -> this[position] == character.value })
-                && contains(character.value)
+        contains(character.value)
+                && (character.positions.isEmpty() || character.positions.all { position -> this[position] == character.value })
                 && !hasAnyInPositionsOf(character.value, character.notInThePosition)
 
     private fun String.hasAnyInPositionsOf(value: Char, positions: Set<Int>): Boolean {

@@ -10,12 +10,11 @@ import kotlin.system.measureTimeMillis
 
 @SpringBootTest
 class WordleBotApplicationTests {
-	fun getPossibleWords(): Sequence<String> =
+	fun getPossibleWords(): List<String> =
 		File("/Users/erickbressani/Documents/git/erick/WordleBot/src/main/kotlin/com/wordlebot/WordleBot/wordle-words")
 			.bufferedReader()
 			.readText()
 			.split("\n")
-			.asSequence()
 			.filter { it.isNotEmpty() }
 
 	@Test
@@ -47,9 +46,9 @@ class WordleBotApplicationTests {
 		println(wrongAnswers)
 	}
 
-	private fun run(correctAnswer: String, possibleWords: Sequence<String>): Result {
+	private fun run(correctAnswer: String, possibleWords: List<String>): Result {
 		val outcomeParser = OutcomeParser()
-		val guesser = Guesser(mutableListOf<String>().apply { addAll(possibleWords) }.asSequence())
+		val guesser = Guesser(mutableListOf<String>().apply { addAll(possibleWords) })
 
 		for (tryNumber in 0..5) {
 			val answer = guesser.guess(outcomeParser.getAllParsedCharacters())

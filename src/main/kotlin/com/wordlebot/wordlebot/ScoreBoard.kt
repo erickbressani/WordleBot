@@ -1,6 +1,6 @@
 package com.wordlebot.wordlebot
 
-class ScoreBoard(words: Sequence<String>) {
+class ScoreBoard(words: List<String>) {
     private val scorePerWord: Map<String, Int>
     private val scorePerChar: Map<Char, CharScore>
 
@@ -29,7 +29,7 @@ class ScoreBoard(words: Sequence<String>) {
         scorePerChar[char]!!
 
     companion object {
-        private fun Sequence<String>.toCharDetailsMap(): Map<Char, List<CharDetail>> =
+        private fun List<String>.toCharDetailsMap(): Map<Char, List<CharDetail>> =
             map { word -> word.mapIndexed { index, char -> CharDetail(char, CharPosition.values()[index], word) } }
                 .flatten()
                 .groupBy { it.value }

@@ -1,7 +1,7 @@
 package com.wordlebot.wordlebot
 
 class WordleBot(
-    private val possibleWords: Sequence<String>,
+    private val possibleWords: List<String>,
     private val outcomeParser: OutcomeParser,
     private val guesser: Guesser
 ) {
