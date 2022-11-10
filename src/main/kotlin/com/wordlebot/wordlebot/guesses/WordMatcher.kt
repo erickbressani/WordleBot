@@ -4,9 +4,9 @@ import com.wordlebot.wordlebot.outcomes.Character
 import com.wordlebot.wordlebot.outcomes.inTheAnswer
 import com.wordlebot.wordlebot.outcomes.notInTheAnswer
 
-class WordMatcher(private var words: List<String>) {
-    fun findMatchesBasedOn(characters: List<Character>): List<String> = with(characters) {
-        words
+class WordMatcher {
+    fun findMatchesBasedOn(possibleWords: List<String>, characters: List<Character>): List<String> = with(characters) {
+        possibleWords
             .filter(inTheAnswer())
             .filterOut(notInTheAnswer())
     }

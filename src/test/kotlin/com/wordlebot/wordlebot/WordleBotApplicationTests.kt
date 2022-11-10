@@ -1,6 +1,8 @@
 package com.wordlebot.wordlebot
 
+import com.wordlebot.wordlebot.guesses.WordChooser
 import com.wordlebot.wordlebot.guesses.WordGuesser
+import com.wordlebot.wordlebot.guesses.WordMatcher
 import com.wordlebot.wordlebot.outcomes.Outcome
 import com.wordlebot.wordlebot.outcomes.OutcomeParser
 import com.wordlebot.wordlebot.outcomes.Character
@@ -52,13 +54,13 @@ class WordleBotApplicationTests {
 
 	private fun run(correctAnswer: String, possibleWords: List<String>): Result {
 		val outcomeParser = OutcomeParser()
-		val wordGuesser = WordGuesser(mutableListOf<String>().apply { addAll(possibleWords) })
+		val wordGuesser = WordGuesser(WordMatcher(), WordChooser(), )
 
 		for (tryNumber in 0..5) {
-			val answer = wordGuesser.guessBasedOn(outcomeParser.getAllParsedCharacters())
+			val answer = wordGuesser.guessBasedOn(mutableListOf<String>().apply { addAll(possibleWords) }, outcomeParser.getAllParsedCharacters())
 
 			if (answer.guessedWord == correctAnswer) {
-				return if (tryNumber == 5 && answer.possibleAnswersCount > 1) {
+				return if (tryNumber == 5 && answer.allPossibleWords.count() > 1) {
 					Result.LucklyCorrect
 				} else {
 					Result.Correct
@@ -76,14 +78,14 @@ class WordleBotApplicationTests {
 	@Test
 	fun specific()  {
 		val possibleAnswers = getPossibleWords()
-		val wordleBot = WordGuesser(possibleAnswers)
+		val wordleBot = WordGuesser(WordMatcher(), WordChooser())
 
 		val characters = listOf<Character>(
 		)
 
 		repeat(2) { println() }
 
-		println(wordleBot.guessBasedOn(characters))
+		println(wordleBot.guessBasedOn(possibleAnswers, characters))
 
 		repeat(2) { println() }
 	}

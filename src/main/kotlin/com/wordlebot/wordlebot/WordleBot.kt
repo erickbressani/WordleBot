@@ -6,7 +6,7 @@ import com.wordlebot.wordlebot.outcomes.OutcomeParser
 import com.wordlebot.wordlebot.outcomes.toCodeSnippet
 
 class WordleBot(
-    private val possibleWords: List<String>,
+    private var possibleWords: List<String>,
     private val outcomeParser: OutcomeParser,
     private val wordGuesser: WordGuesser
 ) {
@@ -15,16 +15,18 @@ class WordleBot(
 
         try {
             (1..6).forEach { tryNumber ->
-                wordGuesser.guessBasedOn(outcomeParser.getAllParsedCharacters()).let { answer ->
-                    println("$tryNumber - Possible Answers: ${answer.possibleAnswersCount}")
-                    println(answer.guessedWord)
+                wordGuesser.guessBasedOn(possibleWords, outcomeParser.getAllParsedCharacters()).let { guess ->
+                    possibleWords = guess.allPossibleWords
+                    println("$tryNumber - Possible Answers: ${guess.allPossibleWords.count()}")
+                    println(guess.guessedWord)
 
                     if (tryNumber < 6) {
                         readOutcomes().let {
                             if (it == null) {
                                 finish()
+                                return
                             } else {
-                                outcomeParser.add(answer.guessedWord, it)
+                                outcomeParser.add(guess.guessedWord, it)
                             }
                         }
                     } else {

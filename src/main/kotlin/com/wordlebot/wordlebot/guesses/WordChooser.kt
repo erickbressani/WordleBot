@@ -1,12 +1,10 @@
 package com.wordlebot.wordlebot.guesses
 
-class WordChooser(words: List<String>) {
-    val chosenWord: String
+class WordChooser {
+    fun choseBasedOn(possibleWords: List<String>): String {
+        val scorePerChar = possibleWords.getScorePerChar()
 
-    init {
-        val scorePerChar = words.getScorePerChar()
-
-        chosenWord = words
+        return possibleWords
             .getScorePerWord { char -> scorePerChar[char]!! }
             .getWordWithHighestScore()
     }

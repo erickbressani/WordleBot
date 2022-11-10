@@ -1,6 +1,8 @@
 package com.wordlebot.wordlebot
 
+import com.wordlebot.wordlebot.guesses.WordChooser
 import com.wordlebot.wordlebot.guesses.WordGuesser
+import com.wordlebot.wordlebot.guesses.WordMatcher
 import com.wordlebot.wordlebot.outcomes.OutcomeParser
 import java.io.File
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -12,12 +14,12 @@ class WordleBotApplication
 fun main(args: Array<String>) {
 	runApplication<WordleBotApplication>(*args)
 
-	getPossibleAnswers().let { possibleAnswers ->
-		WordleBot(possibleAnswers, OutcomeParser(), WordGuesser(possibleAnswers)).run()
+	getPossibleWords().let { possibleWords ->
+		WordleBot(possibleWords, OutcomeParser(), WordGuesser(WordMatcher(), WordChooser())).run()
 	}
 }
 
-fun getPossibleAnswers(): List<String> =
+fun getPossibleWords(): List<String> =
 	File("/Users/erickbressani/Documents/git/erick/WordleBot/src/main/kotlin/com/wordlebot/WordleBot/wordle-words")
 		.bufferedReader()
 		.readText()
