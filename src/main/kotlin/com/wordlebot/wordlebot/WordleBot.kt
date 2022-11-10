@@ -23,19 +23,19 @@ class WordleBot(
                     if (tryNumber < 6) {
                         readOutcomes().let {
                             if (it == null) {
-                                finish()
+                                printCharactersUsed()
                                 return
                             } else {
                                 outcomeParser.add(guess.guessedWord, it)
                             }
                         }
                     } else {
-                        finish()
+                        printCharactersUsed()
                     }
                 }
             }
         } catch (ex: Exception) {
-            finish()
+            printCharactersUsed()
             throw ex
         }
     }
@@ -60,8 +60,7 @@ class WordleBot(
             }
         }
 
-    private fun finish() {
-        println("Finish!")
+    private fun printCharactersUsed() {
         println("Characters Used:")
         println(outcomeParser.getAllParsedCharacters().toCodeSnippet())
     }
