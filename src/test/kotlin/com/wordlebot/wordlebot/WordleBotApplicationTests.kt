@@ -1,5 +1,9 @@
 package com.wordlebot.wordlebot
 
+import com.wordlebot.wordlebot.guesses.WordGuesser
+import com.wordlebot.wordlebot.outcomes.Outcome
+import com.wordlebot.wordlebot.outcomes.OutcomeParser
+import com.wordlebot.wordlebot.outcomes.Character
 import java.io.File
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -48,10 +52,10 @@ class WordleBotApplicationTests {
 
 	private fun run(correctAnswer: String, possibleWords: List<String>): Result {
 		val outcomeParser = OutcomeParser()
-		val guesser = Guesser(mutableListOf<String>().apply { addAll(possibleWords) })
+		val wordGuesser = WordGuesser(mutableListOf<String>().apply { addAll(possibleWords) })
 
 		for (tryNumber in 0..5) {
-			val answer = guesser.guess(outcomeParser.getAllParsedCharacters())
+			val answer = wordGuesser.guessBasedOn(outcomeParser.getAllParsedCharacters())
 
 			if (answer.guessedWord == correctAnswer) {
 				return if (tryNumber == 5 && answer.possibleAnswersCount > 1) {
@@ -72,14 +76,14 @@ class WordleBotApplicationTests {
 	@Test
 	fun specific()  {
 		val possibleAnswers = getPossibleWords()
-		val wordleBot = Guesser(possibleAnswers)
+		val wordleBot = WordGuesser(possibleAnswers)
 
 		val characters = listOf<Character>(
 		)
 
 		repeat(2) { println() }
 
-		println(wordleBot.guess(characters))
+		println(wordleBot.guessBasedOn(characters))
 
 		repeat(2) { println() }
 	}

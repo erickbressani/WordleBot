@@ -1,4 +1,4 @@
-package com.wordlebot.wordlebot
+package com.wordlebot.wordlebot.outcomes
 
 class OutcomeParser {
     private val characters = mutableListOf<Character>()
@@ -21,7 +21,13 @@ class OutcomeParser {
         val existent = characters.firstOrNull { it.value == char }
 
         if (existent == null) {
-            characters.add(Character.InTheAnswer(char, mutableSetOf(position), characters.inTheAnswerPositions(besidesOf = position)))
+            characters.add(
+                Character.InTheAnswer(
+                    char,
+                    mutableSetOf(position),
+                    characters.inTheAnswerPositions(besidesOf = position)
+                )
+            )
         } else {
             when (existent) {
                 is Character.InTheAnswer -> existent.positions.add(position)

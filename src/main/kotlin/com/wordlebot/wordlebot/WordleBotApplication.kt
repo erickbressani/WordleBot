@@ -1,5 +1,7 @@
 package com.wordlebot.wordlebot
 
+import com.wordlebot.wordlebot.guesses.WordGuesser
+import com.wordlebot.wordlebot.outcomes.OutcomeParser
 import java.io.File
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -11,7 +13,7 @@ fun main(args: Array<String>) {
 	runApplication<WordleBotApplication>(*args)
 
 	getPossibleAnswers().let { possibleAnswers ->
-		WordleBot(possibleAnswers, OutcomeParser(), Guesser(possibleAnswers)).run()
+		WordleBot(possibleAnswers, OutcomeParser(), WordGuesser(possibleAnswers)).run()
 	}
 }
 

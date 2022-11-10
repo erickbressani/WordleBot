@@ -1,19 +1,15 @@
-package com.wordlebot.wordlebot
+package com.wordlebot.wordlebot.guesses
 
-class Guesser(private var possibleAnswers: List<String>) {
-    fun guess(characters: List<Character>): Answer {
-        keepOnlyMatches(characters)
-        return Answer(findWordWithHighestScore(), possibleAnswers.count())
-    }
+import com.wordlebot.wordlebot.outcomes.Character
+import com.wordlebot.wordlebot.outcomes.inTheAnswer
+import com.wordlebot.wordlebot.outcomes.notInTheAnswer
 
-    private fun keepOnlyMatches(characters: List<Character>) = with(characters) {
-        possibleAnswers = possibleAnswers
+class WordMatcher(private var words: List<String>) {
+    fun findMatchesBasedOn(characters: List<Character>): List<String> = with(characters) {
+        words
             .filter(inTheAnswer())
             .filterOut(notInTheAnswer())
     }
-
-    private fun findWordWithHighestScore(): String =
-        WordChooser(possibleAnswers).chosenWord
 
     private fun List<String>.filterOut(characters: List<Character.NotInTheAnswer>): List<String> =
         filter { word -> !word.any { characters.map { char -> char.value }.contains(it) } }
@@ -36,5 +32,3 @@ class Guesser(private var possibleAnswers: List<String>) {
         return false
     }
 }
-
-data class Answer(val guessedWord: String, val possibleAnswersCount: Int)

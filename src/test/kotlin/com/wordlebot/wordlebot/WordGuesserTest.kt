@@ -1,9 +1,10 @@
 package com.wordlebot.wordlebot
 
+import com.wordlebot.wordlebot.guesses.WordGuesser
 import java.io.File
 import org.junit.jupiter.api.Test
 
-internal class GuesserTest {
+internal class WordGuesserTest {
     fun getPossibleWords(): List<String> =
         File("/Users/erickbressani/Documents/git/erick/WordleBot/src/main/kotlin/com/wordlebot/WordleBot/wordle-words")
             .bufferedReader()
@@ -11,7 +12,7 @@ internal class GuesserTest {
             .split("\n")
             .filter { it.isNotEmpty() }
 
-    private val guesser = Guesser(getPossibleWords())
+    private val wordGuesser = WordGuesser(getPossibleWords())
 
     @Test
     fun `test`() {

@@ -1,16 +1,21 @@
 package com.wordlebot.wordlebot
 
+import com.wordlebot.wordlebot.guesses.WordGuesser
+import com.wordlebot.wordlebot.outcomes.Outcome
+import com.wordlebot.wordlebot.outcomes.OutcomeParser
+import com.wordlebot.wordlebot.outcomes.toCodeSnippet
+
 class WordleBot(
     private val possibleWords: List<String>,
     private val outcomeParser: OutcomeParser,
-    private val guesser: Guesser
+    private val wordGuesser: WordGuesser
 ) {
     fun run() {
         println("Possible Answers: ${possibleWords.count()}")
 
         try {
             (1..6).forEach { tryNumber ->
-                guesser.guess(outcomeParser.getAllParsedCharacters()).let { answer ->
+                wordGuesser.guessBasedOn(outcomeParser.getAllParsedCharacters()).let { answer ->
                     println("$tryNumber - Possible Answers: ${answer.possibleAnswersCount}")
                     println(answer.guessedWord)
 

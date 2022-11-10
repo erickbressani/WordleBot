@@ -1,4 +1,4 @@
-package com.wordlebot.wordlebot
+package com.wordlebot.wordlebot.guesses
 
 class WordChooser(words: List<String>) {
     val chosenWord: String

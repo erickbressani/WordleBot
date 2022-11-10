@@ -1,4 +1,4 @@
-package com.wordlebot.wordlebot
+package com.wordlebot.wordlebot.outcomes
 
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
