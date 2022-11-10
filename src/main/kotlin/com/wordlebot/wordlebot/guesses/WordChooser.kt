@@ -12,17 +12,11 @@ class WordChooser {
     private fun List<String>.getScorePerChar(): Map<Char, CharScore> =
         toCharDetailsMap().toCharScoreMap()
 
-    private fun List<String>.getScorePerWord(getCharScoreBy: (Char) -> (CharScore)): List<Pair<String, Int>> =
-        mutableMapOf<String, Int>()
-            .apply {
-                this@getScorePerWord.forEach { word ->
-                    this[word] = getScoreOf(word, getCharScoreBy)
-                }
-            }
-            .toList()
+    private fun List<String>.getScorePerWord(getCharScoreBy: (Char) -> (CharScore)): Map<String, Int> =
+        this.associateWith { word -> getScoreOf(word, getCharScoreBy) }
 
-    private fun List<Pair<String, Int>>.getWordWithHighestScore() =
-        maxByOrNull { it.second }!!.first
+    private fun Map<String, Int>.getWordWithHighestScore() =
+        toList().maxByOrNull { it.second }!!.first
 
     private fun getScoreOf(word: String, getCharScoreBy: (Char) -> (CharScore)): Int =
         word.getScoreForEachRecurrentChar(getCharScoreBy) + word.getScoreForEachCharInSamePositions(getCharScoreBy)
