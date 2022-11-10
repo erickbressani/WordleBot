@@ -1,32 +1,39 @@
 package com.wordlebot.wordlebot
 
-class ScoreBoard(words: List<String>) {
-    private val scorePerWord: Map<String, Int>
-    private val scorePerChar: Map<Char, CharScore>
+class WordChooser(words: List<String>) {
+    val chosenWord: String
 
     init {
-        scorePerChar = words
-            .toCharDetailsMap()
-            .toCharScoreMap()
+        val scorePerChar = words.getScorePerChar()
 
-        scorePerWord = mutableMapOf<String, Int>().apply {
-            words.forEach { word -> this[word] = getScoreOf(word) }
-        }
+        chosenWord = words
+            .getScorePerWord { char -> scorePerChar[char]!! }
+            .getWordWithHighestScore()
     }
 
-    fun getWordWithHighestScore() =
-        scorePerWord
+    private fun List<String>.getScorePerChar(): Map<Char, CharScore> =
+        toCharDetailsMap().toCharScoreMap()
+
+    private fun List<String>.getScorePerWord(getCharScoreBy: (Char) -> (CharScore)): List<Pair<String, Int>> =
+        mutableMapOf<String, Int>()
+            .apply {
+                this@getScorePerWord.forEach { word ->
+                    this[word] = getScoreOf(word, getCharScoreBy)
+                }
+            }
             .toList()
-            .maxByOrNull { it.second }!!.first
 
-    private fun getScoreOf(word: String): Int {
-        var score = word.map { it }.distinct().sumOf { getCharScoreBy(it).foundCount } * 2
-        score += word.mapIndexed { index, char -> getCharScoreBy(char).scoreIn(index) }.sum()
-        return score
-    }
+    private fun List<Pair<String, Int>>.getWordWithHighestScore() =
+        maxByOrNull { it.second }!!.first
 
-    private fun getCharScoreBy(char: Char) =
-        scorePerChar[char]!!
+    private fun getScoreOf(word: String, getCharScoreBy: (Char) -> (CharScore)): Int =
+        word.getScoreForEachRecurrentChar(getCharScoreBy) + word.getScoreForEachCharInSamePositions(getCharScoreBy)
+
+    private fun String.getScoreForEachRecurrentChar(getCharScoreBy: (Char) -> (CharScore)): Int =
+        map { it }.distinct().sumOf { getCharScoreBy(it).foundCount } * 2
+
+    private fun String.getScoreForEachCharInSamePositions(getCharScoreBy: (Char) -> (CharScore)): Int =
+        mapIndexed { index, char -> getCharScoreBy(char).scoreIn(index) }.sum()
 
     companion object {
         private fun List<String>.toCharDetailsMap(): Map<Char, List<CharDetail>> =

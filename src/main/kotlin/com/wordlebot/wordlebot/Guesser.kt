@@ -13,7 +13,7 @@ class Guesser(private var possibleAnswers: List<String>) {
     }
 
     private fun findWordWithHighestScore(): String =
-        ScoreBoard(possibleAnswers).getWordWithHighestScore()
+        WordChooser(possibleAnswers).chosenWord
 
     private fun List<String>.filterOut(characters: List<Character.NotInTheAnswer>): List<String> =
         filter { word -> !word.any { characters.map { char -> char.value }.contains(it) } }
