@@ -7,4 +7,7 @@ data class Word(val value: String) {
 
     fun forEachCharIndexed(action: (Int, Char) -> Unit) =
         value.forEachIndexed(action)
+
+    override fun toString(): String =
+        value
 }
