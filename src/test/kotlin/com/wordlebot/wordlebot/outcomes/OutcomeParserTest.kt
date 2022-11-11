@@ -4,6 +4,8 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
+import com.wordlebot.wordlebot.models.Character
+import com.wordlebot.wordlebot.models.Word
 
 internal class OutcomeParserTest {
     private val outcomeParser = OutcomeParser()
@@ -24,7 +26,7 @@ internal class OutcomeParserTest {
         outcomeParser.getAllParsedCharacters().let { characters ->
             characters.shouldHaveSize(5)
             characters.all { it is Character.NotInTheAnswer } shouldBe true
-            wordWithUniqueLetters.forEachIndexed { index, char -> characters[index].value shouldBe char }
+            wordWithUniqueLetters.forEachCharIndexed { index, char -> characters[index].value shouldBe char }
         }
     }
 
@@ -44,7 +46,7 @@ internal class OutcomeParserTest {
         outcomeParser.getAllParsedCharacters().let { characters ->
             characters.shouldHaveSize(5)
             characters.all { it is Character.InTheAnswer }  shouldBe true
-            wordWithUniqueLetters.forEachIndexed { index, char ->
+            wordWithUniqueLetters.forEachCharIndexed { index, char ->
                 characters[index].value shouldBe char
                 (characters[index] as Character.InTheAnswer).notInThePosition shouldBe mutableListOf(index)
             }
@@ -67,7 +69,7 @@ internal class OutcomeParserTest {
         outcomeParser.getAllParsedCharacters().let { characters ->
             characters.shouldHaveSize(5)
             characters.all { it is Character.InTheAnswer }  shouldBe true
-            wordWithUniqueLetters.forEachIndexed { index, char ->
+            wordWithUniqueLetters.forEachCharIndexed { index, char ->
                 characters[index].value shouldBe char
                 (characters[index] as Character.InTheAnswer).notInThePosition shouldBe
                         listOf(0, 1, 2, 3, 4).filter { it != index }.toMutableList()
@@ -244,10 +246,10 @@ internal class OutcomeParserTest {
     }
 
     companion object {
-        const val wordWithUniqueLetters = "arise"
-        const val wordWithRepeatedLetters = "eeaaa"
-        const val wordWithRepeatedAndUniqueLetters = "queue"
-        const val abcde = "abcde"
-        const val fghij = "fghij"
+        val wordWithUniqueLetters = Word("arise")
+        val wordWithRepeatedLetters = Word("eeaaa")
+        val wordWithRepeatedAndUniqueLetters = Word("queue")
+        val abcde = Word("abcde")
+        val fghij = Word("fghij")
     }
 }

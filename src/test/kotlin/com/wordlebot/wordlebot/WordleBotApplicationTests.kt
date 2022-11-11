@@ -5,7 +5,8 @@ import com.wordlebot.wordlebot.guesses.WordGuesser
 import com.wordlebot.wordlebot.guesses.WordMatcher
 import com.wordlebot.wordlebot.outcomes.Outcome
 import com.wordlebot.wordlebot.outcomes.OutcomeParser
-import com.wordlebot.wordlebot.outcomes.Character
+import com.wordlebot.wordlebot.models.Character
+import com.wordlebot.wordlebot.models.Word
 import java.io.File
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -16,20 +17,13 @@ import kotlin.system.measureTimeMillis
 
 @SpringBootTest
 class WordleBotApplicationTests {
-	fun getPossibleWords(): List<String> =
-		File("/Users/erickbressani/Documents/git/erick/WordleBot/src/main/kotlin/com/wordlebot/WordleBot/wordle-words")
-			.bufferedReader()
-			.readText()
-			.split("\n")
-			.filter { it.isNotEmpty() }
-
 	@Test
 	fun test() {
 		var correctCount = 0
 		var wrongCount = 0
 		var pureLuckCount = 0
 		val wrongAnswers = mutableListOf<String>()
-		val possibleWords = getPossibleWords()
+		val possibleWords = WordsFinder.get()
 
 		possibleWords.forEach { correctAnswer ->
 			run(correctAnswer, possibleWords)
@@ -52,12 +46,12 @@ class WordleBotApplicationTests {
 		println(wrongAnswers)
 	}
 
-	private fun run(correctAnswer: String, possibleWords: List<String>): Result {
+	private fun run(correctAnswer: Word, possibleWords: List<Word>): Result {
 		val outcomeParser = OutcomeParser()
 		val wordGuesser = WordGuesser(WordMatcher(), WordChooser(), )
 
 		for (tryNumber in 0..5) {
-			val answer = wordGuesser.guessBasedOn(mutableListOf<String>().apply { addAll(possibleWords) }, outcomeParser.getAllParsedCharacters())
+			val answer = wordGuesser.guessBasedOn(mutableListOf<Word>().apply { addAll(possibleWords) }, outcomeParser.getAllParsedCharacters())
 
 			if (answer.guessedWord == correctAnswer) {
 				return if (tryNumber == 5 && answer.allPossibleWords.count() > 1) {
@@ -77,7 +71,7 @@ class WordleBotApplicationTests {
 
 	@Test
 	fun specific()  {
-		val possibleAnswers = getPossibleWords()
+		val possibleAnswers = WordsFinder.get()
 		val wordleBot = WordGuesser(WordMatcher(), WordChooser())
 
 		val characters = listOf<Character>(
@@ -90,16 +84,16 @@ class WordleBotApplicationTests {
 		repeat(2) { println() }
 	}
 
-	private fun String.getOutcomesBasedOn(correctAnswer: String): List<Outcome> {
+	private fun Word.getOutcomesBasedOn(correctAnswer: Word): List<Outcome> {
 		val outcomesPerChar = mutableMapOf<Char, Outcome>()
 		val outcomesPerIndex = mutableMapOf<Int, Outcome>()
 		val charsToCheckForAtLeastInAnswer = mutableMapOf<Int, Char>()
 
-		forEachIndexed { index, char ->
-			if (char == correctAnswer[index]) {
+		forEachCharIndexed { index, char ->
+			if (char == correctAnswer.value[index]) {
 				outcomesPerChar[char] = Outcome.InTheCorrectPosition
 				outcomesPerIndex[index] = Outcome.InTheCorrectPosition
-			} else if (!correctAnswer.contains(char)) {
+			} else if (!correctAnswer.value.contains(char)) {
 				outcomesPerChar[char] = Outcome.NotInTheAnswer
 				outcomesPerIndex[index] = Outcome.NotInTheAnswer
 			} else {
@@ -109,7 +103,7 @@ class WordleBotApplicationTests {
 
 		charsToCheckForAtLeastInAnswer.forEach { (index, char) ->
 			val correctInOutcomesCount = outcomesPerChar.count { it.key == char }
-			val charInAnswerCount = correctAnswer.count { it == char }
+			val charInAnswerCount = correctAnswer.value.count { it == char }
 
 			if (charInAnswerCount == correctInOutcomesCount) {
 				outcomesPerIndex[index] = Outcome.NotInTheAnswer

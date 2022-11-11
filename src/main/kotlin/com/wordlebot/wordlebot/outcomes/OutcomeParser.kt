@@ -1,12 +1,16 @@
 package com.wordlebot.wordlebot.outcomes
 
+import com.wordlebot.wordlebot.models.Character
+import com.wordlebot.wordlebot.models.Word
+import com.wordlebot.wordlebot.models.inTheAnswerPositions
+
 class OutcomeParser {
     private val characters = mutableListOf<Character>()
 
     fun getAllParsedCharacters(): List<Character> = characters
 
-    fun add(guessedWord: String, outcomes: List<Outcome>) {
-        guessedWord.forEachIndexed { index, char ->
+    fun add(guessedWord: Word, outcomes: List<Outcome>) {
+        guessedWord.forEachCharIndexed { index, char ->
             when (outcomes[index]) {
                 Outcome.InTheCorrectPosition -> addInTheCorrectPosition(char, index)
                 Outcome.AtLeastInTheAnswer -> addAtLeastInTheAnswer(char, index)

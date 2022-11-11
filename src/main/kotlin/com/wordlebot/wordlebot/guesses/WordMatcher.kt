@@ -1,21 +1,22 @@
 package com.wordlebot.wordlebot.guesses
 
-import com.wordlebot.wordlebot.outcomes.Character
-import com.wordlebot.wordlebot.outcomes.inTheAnswer
-import com.wordlebot.wordlebot.outcomes.notInTheAnswer
+import com.wordlebot.wordlebot.models.Character
+import com.wordlebot.wordlebot.models.Word
+import com.wordlebot.wordlebot.models.inTheAnswer
+import com.wordlebot.wordlebot.models.notInTheAnswer
 
 class WordMatcher {
-    fun findMatchesBasedOn(possibleWords: List<String>, characters: List<Character>): List<String> = with(characters) {
+    fun findMatchesBasedOn(possibleWords: List<Word>, characters: List<Character>): List<Word> = with(characters) {
         possibleWords
             .filter(inTheAnswer())
             .filterOut(notInTheAnswer())
     }
 
-    private fun List<String>.filterOut(characters: List<Character.NotInTheAnswer>): List<String> =
-        filter { word -> !word.any { characters.map { char -> char.value }.contains(it) } }
+    private fun List<Word>.filterOut(characters: List<Character.NotInTheAnswer>): List<Word> =
+        filter { (word) -> !word.any { characters.map { char -> char.value }.contains(it) } }
 
-    private fun List<String>.filter(characters: List<Character.InTheAnswer>): List<String> =
-        filter { word -> characters.all { word.has(it) } }
+    private fun List<Word>.filter(characters: List<Character.InTheAnswer>): List<Word> =
+        filter { (word) -> characters.all { word.has(it) } }
 
     private fun String.has(character: Character.InTheAnswer): Boolean =
         contains(character.value)

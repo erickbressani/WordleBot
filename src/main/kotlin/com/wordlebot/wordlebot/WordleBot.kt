@@ -1,12 +1,13 @@
 package com.wordlebot.wordlebot
 
 import com.wordlebot.wordlebot.guesses.WordGuesser
+import com.wordlebot.wordlebot.models.Word
 import com.wordlebot.wordlebot.outcomes.Outcome
 import com.wordlebot.wordlebot.outcomes.OutcomeParser
-import com.wordlebot.wordlebot.outcomes.toCodeSnippet
+import com.wordlebot.wordlebot.models.toCodeSnippet
 
 class WordleBot(
-    private var possibleWords: List<String>,
+    private var possibleWords: List<Word>,
     private val outcomeParser: OutcomeParser,
     private val wordGuesser: WordGuesser
 ) {

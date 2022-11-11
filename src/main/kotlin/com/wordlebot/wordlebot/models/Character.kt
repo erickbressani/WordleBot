@@ -1,4 +1,4 @@
-package com.wordlebot.wordlebot.outcomes
+package com.wordlebot.wordlebot.models
 
 sealed interface Character {
     val value: Char

@@ -1,7 +1,9 @@
 package com.wordlebot.wordlebot.guesses
 
+import com.wordlebot.wordlebot.models.Word
+
 class WordChooser {
-    fun choseBasedOn(possibleWords: List<String>): String {
+    fun choseBasedOn(possibleWords: List<Word>): Word {
         val scorePerChar = possibleWords.getScorePerChar()
 
         return possibleWords
@@ -9,13 +11,13 @@ class WordChooser {
             .getWordWithHighestScore()
     }
 
-    private fun List<String>.getScorePerChar(): Map<Char, CharScore> =
+    private fun List<Word>.getScorePerChar(): Map<Char, CharScore> =
         toCharDetailsMap().toCharScoreMap()
 
-    private fun List<String>.getScorePerWord(getCharScoreBy: (Char) -> (CharScore)): Map<String, Int> =
-        this.associateWith { word -> getScoreOf(word, getCharScoreBy) }
+    private fun List<Word>.getScorePerWord(getCharScoreBy: (Char) -> (CharScore)): Map<Word, Int> =
+        this.associateWith { (word) -> getScoreOf(word, getCharScoreBy) }
 
-    private fun Map<String, Int>.getWordWithHighestScore() =
+    private fun Map<Word, Int>.getWordWithHighestScore(): Word =
         toList().maxByOrNull { it.second }!!.first
 
     private fun getScoreOf(word: String, getCharScoreBy: (Char) -> (CharScore)): Int =
@@ -28,8 +30,8 @@ class WordChooser {
         mapIndexed { index, char -> getCharScoreBy(char).scoreIn(index) }.sum()
 
     companion object {
-        private fun List<String>.toCharDetailsMap(): Map<Char, List<CharDetail>> =
-            map { word -> word.mapIndexed { index, char -> CharDetail(char, CharPosition.values()[index], word) } }
+        private fun List<Word>.toCharDetailsMap(): Map<Char, List<CharDetail>> =
+            map { (word) -> word.mapIndexed { index, char -> CharDetail(char, CharPosition.values()[index], word) } }
                 .flatten()
                 .groupBy { it.value }
 
