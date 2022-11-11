@@ -21,12 +21,12 @@ class WordleBot(
                     println(guess.guessedWord)
 
                     if (tryNumber < 6) {
-                        readOutcomes().let {
-                            if (it == null) {
+                        readOutcomes().let { outcomes ->
+                            if (outcomes == null) {
                                 printCharactersUsed()
                                 return
                             } else {
-                                outcomeParser.add(guess.guessedWord, it)
+                                outcomeParser.add(guess.guessedWord, outcomes)
                             }
                         }
                     } else {
