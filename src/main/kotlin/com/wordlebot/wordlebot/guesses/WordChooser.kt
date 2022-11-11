@@ -3,11 +3,9 @@ package com.wordlebot.wordlebot.guesses
 import com.wordlebot.wordlebot.models.Word
 
 class WordChooser {
-    fun choseBasedOn(possibleWords: List<Word>): Word {
-        val scorePerChar = possibleWords.getScorePerChar()
-
-        return possibleWords
-            .getScorePerWord { char -> scorePerChar[char]!! }
+    fun choseBasedOn(possibleWords: List<Word>): Word = with(possibleWords) {
+        getScorePerChar()
+            .run { getScorePerWord { char -> this[char]!! } }
             .getWordWithHighestScore()
     }
 
@@ -15,10 +13,10 @@ class WordChooser {
         toCharDetailsMap().toCharScoreMap()
 
     private fun List<Word>.getScorePerWord(getCharScoreBy: (Char) -> (CharScore)): Map<Word, Int> =
-        this.associateWith { (word) -> getScoreOf(word, getCharScoreBy) }
+        associateWith { (word) -> getScoreOf(word, getCharScoreBy) }
 
     private fun Map<Word, Int>.getWordWithHighestScore(): Word =
-        toList().maxByOrNull { it.second }!!.first
+        maxByOrNull { it.value }!!.key
 
     private fun getScoreOf(word: String, getCharScoreBy: (Char) -> (CharScore)): Int =
         word.getScoreForEachRecurrentChar(getCharScoreBy) + word.getScoreForEachCharInSamePositions(getCharScoreBy)
