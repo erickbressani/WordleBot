@@ -18,18 +18,14 @@ class WordleBot(
         forEachTry { tryNumber ->
             wordGuesser.guessBasedOn(possibleWords, outcomeParser.getAllParsedCharacters()).let { guess ->
                 possibleWords = guess.allPossibleWords
-
                 guess.print(tryNumber)
 
                 if (tryNumber < 6) {
-                    readOutcomes().let { outcomes ->
-                        if (outcomes == null) {
+                    readOutcomes(
+                        onQuit =  {
                             printCharactersUsed()
-                            return@forEachTry
-                        } else {
-                            outcomeParser.add(guess.guessedWord, outcomes)
-                        }
-                    }
+                            return@readOutcomes
+                        }) { outcomes -> outcomeParser.add(guess.guessedWord, outcomes) }
                 } else {
                     printCharactersUsed()
                 }
@@ -45,15 +41,18 @@ class WordleBot(
             throw ex
         }
 
-    private fun readOutcomes(): List<Outcome>? {
+    private fun readOutcomes(onQuit: () -> Unit, block: (List<Outcome>) -> Unit) {
         var input: String
 
         do {
             input = readln().trim()
-            if (input == "q") return null
+
+            if (input == "q") {
+                onQuit()
+            }
         } while (input.length != 5 || input.any { !listOf('x', '.', '?').contains(it) })
 
-        return input.toOutcomes()
+        return input.toOutcomes().run(block)
     }
 
     private fun String.toOutcomes(): List<Outcome> =
