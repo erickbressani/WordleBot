@@ -20,17 +20,16 @@ class WordleBot(
                 possibleWords = guess.allPossibleWords
                 guess.print(tryNumber)
 
-                if (tryNumber < 6) {
-                    readOutcomes(
-                        onQuit =  {
-                            printCharactersUsed()
-                            return@readOutcomes
-                        }) { outcomes -> outcomeParser.add(guess.guessedWord, outcomes) }
-                } else {
-                    printCharactersUsed()
-                }
+                readOutcomes(
+                    onQuit = {
+                        printCharactersUsed()
+                        return@readOutcomes
+                    }
+                ) { outcomes -> outcomeParser.add(guess.guessedWord, outcomes) }
             }
         }
+
+        printCharactersUsed()
     }
 
     private fun forEachTry(block: (Int) -> Unit) =
