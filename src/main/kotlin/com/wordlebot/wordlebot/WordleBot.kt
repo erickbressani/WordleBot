@@ -1,5 +1,6 @@
 package com.wordlebot.wordlebot
 
+import com.wordlebot.wordlebot.guesses.Guess
 import com.wordlebot.wordlebot.guesses.WordGuesser
 import com.wordlebot.wordlebot.models.Word
 import com.wordlebot.wordlebot.outcomes.Outcome
@@ -14,32 +15,35 @@ class WordleBot(
     fun run() {
         println("Possible Answers: ${possibleWords.count()}")
 
-        try {
-            (1..6).forEach { tryNumber ->
-                wordGuesser.guessBasedOn(possibleWords, outcomeParser.getAllParsedCharacters()).let { guess ->
-                    possibleWords = guess.allPossibleWords
-                    println("$tryNumber - Possible Answers: ${guess.allPossibleWords.count()}")
-                    println(guess.guessedWord)
+        forEachTry { tryNumber ->
+            wordGuesser.guessBasedOn(possibleWords, outcomeParser.getAllParsedCharacters()).let { guess ->
+                possibleWords = guess.allPossibleWords
 
-                    if (tryNumber < 6) {
-                        readOutcomes().let { outcomes ->
-                            if (outcomes == null) {
-                                printCharactersUsed()
-                                return
-                            } else {
-                                outcomeParser.add(guess.guessedWord, outcomes)
-                            }
+                guess.print(tryNumber)
+
+                if (tryNumber < 6) {
+                    readOutcomes().let { outcomes ->
+                        if (outcomes == null) {
+                            printCharactersUsed()
+                            return@forEachTry
+                        } else {
+                            outcomeParser.add(guess.guessedWord, outcomes)
                         }
-                    } else {
-                        printCharactersUsed()
                     }
+                } else {
+                    printCharactersUsed()
                 }
             }
+        }
+    }
+
+    private fun forEachTry(block: (Int) -> Unit) =
+        try {
+            (1..6).forEach(block)
         } catch (ex: Exception) {
             printCharactersUsed()
             throw ex
         }
-    }
 
     private fun readOutcomes(): List<Outcome>? {
         var input: String
@@ -52,7 +56,7 @@ class WordleBot(
         return input.toOutcomes()
     }
 
-    private fun String.toOutcomes() =
+    private fun String.toOutcomes(): List<Outcome> =
         map {
             when {
                 it.lowercase() == "x" -> Outcome.NotInTheAnswer
@@ -60,6 +64,11 @@ class WordleBot(
                 else -> Outcome.InTheCorrectPosition
             }
         }
+
+    private fun Guess.print(tryNumber: Int) {
+        println("$tryNumber - Possible Answers: ${allPossibleWords.count()}")
+        println(guessedWord)
+    }
 
     private fun printCharactersUsed() {
         println("Characters Used:")
