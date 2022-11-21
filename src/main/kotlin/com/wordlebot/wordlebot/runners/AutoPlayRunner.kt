@@ -1,10 +1,9 @@
-package com.wordlebot.wordlebot
+package com.wordlebot.wordlebot.runners
 
 import com.wordlebot.wordlebot.guesses.WordGuesser
 import com.wordlebot.wordlebot.models.Word
 import com.wordlebot.wordlebot.outcomes.Outcome
 import com.wordlebot.wordlebot.outcomes.OutcomeParser
-import com.wordlebot.wordlebot.outcomes.Runner
 
 class AutoPlayRunner(
     private val words: List<Word>,

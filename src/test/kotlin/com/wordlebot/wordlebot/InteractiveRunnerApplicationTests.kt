@@ -1,15 +1,18 @@
 package com.wordlebot.wordlebot
 
+import com.wordlebot.wordlebot.app.WordsFinder
 import com.wordlebot.wordlebot.guesses.WordChooser
 import com.wordlebot.wordlebot.guesses.WordGuesser
 import com.wordlebot.wordlebot.guesses.WordMatcher
 import com.wordlebot.wordlebot.models.Character
 import com.wordlebot.wordlebot.outcomes.OutcomeParser
+import com.wordlebot.wordlebot.runners.AutoPlayRunner
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
+import com.wordlebot.wordlebot.runners.Result
 
 @SpringBootTest
-class WordleBotApplicationTests {
+class InteractiveRunnerApplicationTests {
 	private val possibleWords = WordsFinder.get()
 
 	@Test

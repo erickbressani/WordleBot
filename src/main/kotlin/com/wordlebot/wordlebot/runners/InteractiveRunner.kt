@@ -1,17 +1,16 @@
-package com.wordlebot.wordlebot
+package com.wordlebot.wordlebot.runners
 
 import com.wordlebot.wordlebot.guesses.Guess
 import com.wordlebot.wordlebot.guesses.WordGuesser
 import com.wordlebot.wordlebot.models.Word
 import com.wordlebot.wordlebot.outcomes.Outcome
 import com.wordlebot.wordlebot.outcomes.OutcomeParser
-import com.wordlebot.wordlebot.models.toCodeSnippet
 
-class WordleBot(
+class InteractiveRunner(
     private var possibleWords: List<Word>,
     private val outcomeParser: OutcomeParser,
     private val wordGuesser: WordGuesser
-) {
+): Runner(outcomeParser) {
     fun run() {
         println("Possible Answers: ${possibleWords.count()}")
 
@@ -31,14 +30,6 @@ class WordleBot(
 
         printCharactersUsed()
     }
-
-    private fun forEachTry(block: (Int) -> Unit) =
-        try {
-            (1..6).forEach(block)
-        } catch (ex: Exception) {
-            printCharactersUsed()
-            throw ex
-        }
 
     private fun readOutcomes(onQuit: () -> Unit, block: (List<Outcome>) -> Unit) {
         var input: String
@@ -66,10 +57,5 @@ class WordleBot(
     private fun Guess.print(tryNumber: Int) {
         println("$tryNumber - Possible Answers: ${allPossibleWords.count()}")
         println(guessedWord)
-    }
-
-    private fun printCharactersUsed() {
-        println("Characters Used:")
-        println(outcomeParser.getAllParsedCharacters().toCodeSnippet())
     }
 }

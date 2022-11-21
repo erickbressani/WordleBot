@@ -1,10 +1,11 @@
-package com.wordlebot.wordlebot.outcomes
+package com.wordlebot.wordlebot.runners
 
 import com.wordlebot.wordlebot.models.toCodeSnippet
+import com.wordlebot.wordlebot.outcomes.OutcomeParser
 
 abstract class Runner(
     private val outcomeParser: OutcomeParser,
-    private val printInConsole: Boolean
+    private val printInConsole: Boolean = true
 ) {
     fun forEachTry(block: (Int) -> Unit) =
         try {
