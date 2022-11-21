@@ -3,40 +3,35 @@ package com.wordlebot.wordlebot
 import com.wordlebot.wordlebot.guesses.WordChooser
 import com.wordlebot.wordlebot.guesses.WordGuesser
 import com.wordlebot.wordlebot.guesses.WordMatcher
-import com.wordlebot.wordlebot.outcomes.Outcome
-import com.wordlebot.wordlebot.outcomes.OutcomeParser
 import com.wordlebot.wordlebot.models.Character
-import com.wordlebot.wordlebot.models.Word
-import java.io.File
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import com.wordlebot.wordlebot.outcomes.OutcomeParser
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
-import kotlin.system.measureTimeMillis
 
 @SpringBootTest
 class WordleBotApplicationTests {
+	private val possibleWords = WordsFinder.get()
+
 	@Test
 	fun test() {
 		var correctCount = 0
 		var wrongCount = 0
 		var pureLuckCount = 0
 		val wrongAnswers = mutableListOf<String>()
-		val possibleWords = WordsFinder.get()
 
 		possibleWords.forEach { correctAnswer ->
-			run(correctAnswer, possibleWords)
-				.let {
-					when (it) {
-						Result.Correct -> correctCount++
-						Result.LucklyCorrect -> {
-							correctCount++
-							pureLuckCount++
-						}
-						Result.Wrong -> wrongCount++
+			val runner = AutoPlayRunner(possibleWords, OutcomeParser(), WordGuesser(WordMatcher(), WordChooser()), printInConsole = false)
+
+			runner.run(correctAnswer).let {
+				when (it) {
+					Result.Correct -> correctCount++
+					Result.LucklyCorrect -> {
+						correctCount++
+						pureLuckCount++
 					}
+					Result.NotFound -> wrongCount++
 				}
+			}
 		}
 
 		println("pure luck: $pureLuckCount")
@@ -44,29 +39,6 @@ class WordleBotApplicationTests {
 		println("correct: $correctCount")
 		println("pure correct: ${correctCount - pureLuckCount}")
 		println(wrongAnswers)
-	}
-
-	private fun run(correctAnswer: Word, possibleWords: List<Word>): Result {
-		val outcomeParser = OutcomeParser()
-		val wordGuesser = WordGuesser(WordMatcher(), WordChooser(), )
-
-		for (tryNumber in 0..5) {
-			val answer = wordGuesser.guessBasedOn(mutableListOf<Word>().apply { addAll(possibleWords) }, outcomeParser.getAllParsedCharacters())
-
-			if (answer.guessedWord == correctAnswer) {
-				return if (tryNumber == 5 && answer.allPossibleWords.count() > 1) {
-					Result.LucklyCorrect
-				} else {
-					Result.Correct
-				}
-			} else if (tryNumber == 5) {
-				return Result.Wrong
-			}
-
-			outcomeParser.add(answer.guessedWord, answer.guessedWord.getOutcomesBasedOn(correctAnswer))
-		}
-
-		return Result.Wrong
 	}
 
 	@Test
@@ -83,62 +55,4 @@ class WordleBotApplicationTests {
 
 		repeat(2) { println() }
 	}
-
-	private fun Word.getOutcomesBasedOn(correctAnswer: Word): List<Outcome> {
-		val outcomesPerChar = mutableMapOf<Char, Outcome>()
-		val outcomesPerIndex = mutableMapOf<Int, Outcome>()
-		val charsToCheckForAtLeastInAnswer = mutableMapOf<Int, Char>()
-
-		forEachCharIndexed { index, char ->
-			if (char == correctAnswer.value[index]) {
-				outcomesPerChar[char] = Outcome.InTheCorrectPosition
-				outcomesPerIndex[index] = Outcome.InTheCorrectPosition
-			} else if (!correctAnswer.value.contains(char)) {
-				outcomesPerChar[char] = Outcome.NotInTheAnswer
-				outcomesPerIndex[index] = Outcome.NotInTheAnswer
-			} else {
-				charsToCheckForAtLeastInAnswer[index] = char
-			}
-		}
-
-		charsToCheckForAtLeastInAnswer.forEach { (index, char) ->
-			val correctInOutcomesCount = outcomesPerChar.count { it.key == char }
-			val charInAnswerCount = correctAnswer.value.count { it == char }
-
-			if (charInAnswerCount == correctInOutcomesCount) {
-				outcomesPerIndex[index] = Outcome.NotInTheAnswer
-			} else {
-				outcomesPerIndex[index] = Outcome.AtLeastInTheAnswer
-			}
-		}
-
-		return outcomesPerIndex.keys.sorted()
-			.map { outcomesPerIndex[it]!! }
-	}
-
-	@Test
-	fun testCoroutine() = runBlocking {
-		val time = measureTimeMillis {
-			val one = async { doSomethingUsefulOne() }
-			val two = async { doSomethingUsefulTwo() }
-			println("The answer is ${one.await() + two.await()}")
-		}
-		println("Completed in $time ms")
-	}
-
-	suspend fun doSomethingUsefulOne(): Int {
-		delay(1000L) // pretend we are doing something useful here
-		return 13
-	}
-
-	suspend fun doSomethingUsefulTwo(): Int {
-		delay(1000L) // pretend we are doing something useful here, too
-		return 29
-	}
-}
-
-enum class Result {
-	Correct,
-	LucklyCorrect,
-	Wrong
 }
