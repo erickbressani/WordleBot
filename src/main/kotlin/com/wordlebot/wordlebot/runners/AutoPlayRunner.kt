@@ -15,7 +15,7 @@ class AutoPlayRunner(
         var result = Result.NotFound
         var possibleWords = words
 
-        forEachTry { tryNumber ->
+        forEachAttempt { (attemptNumber) ->
             with(wordGuesser.guessBasedOn(possibleWords, outcomeParser.getAllParsedCharacters())) {
                 if (result == Result.NotFound) {
                     possibleWords = allPossibleWords
@@ -24,11 +24,11 @@ class AutoPlayRunner(
                         .getOutcomesBasedOn(correctAnswer)
                         .let { outcomes ->
                             outcomeParser.add(guessedWord, outcomes)
-                            guessedWord.print(tryNumber, outcomes)
+                            guessedWord.print(attemptNumber, outcomes)
                         }
 
                     if (guessedWord == correctAnswer) {
-                        result = if (allPossibleWords.count() > 1 && tryNumber == 6) Result.LucklyCorrect else Result.Correct
+                        result = if (allPossibleWords.count() > 1 && attemptNumber == 6) Result.LucklyCorrect else Result.Correct
                     }
                 }
             }
@@ -88,9 +88,9 @@ class AutoPlayRunner(
             .map { outcomesPerIndex[it]!! }
     }
 
-    private fun Word.print(tryNumber: Int, outcomes: List<Outcome>) = with(StringBuilder()) {
+    private fun Word.print(attemptNumber: Int, outcomes: List<Outcome>) = with(StringBuilder()) {
         if (printInConsole) {
-            if (tryNumber > 1) readln()
+            if (attemptNumber > 1) readln()
 
             value.forEachIndexed { index, char ->
                 when(outcomes[index]) {
@@ -100,7 +100,7 @@ class AutoPlayRunner(
                 }
             }
 
-            print("$tryNumber - ${toString()} $ANSI_RESET")
+            print("$attemptNumber - ${toString()} $ANSI_RESET")
         }
     }
 

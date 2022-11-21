@@ -1,6 +1,5 @@
-package com.wordlebot.wordlebot
+package com.wordlebot.wordlebot.app
 
-import com.wordlebot.wordlebot.app.WordsFinder
 import com.wordlebot.wordlebot.guesses.WordChooser
 import com.wordlebot.wordlebot.guesses.WordGuesser
 import com.wordlebot.wordlebot.guesses.WordMatcher

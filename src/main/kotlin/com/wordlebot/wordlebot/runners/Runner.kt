@@ -7,9 +7,9 @@ abstract class Runner(
     private val outcomeParser: OutcomeParser,
     private val printInConsole: Boolean = true
 ) {
-    fun forEachTry(block: (Int) -> Unit) =
+    fun forEachAttempt(block: (Attempt) -> Unit) =
         try {
-            (1..6).forEach(block)
+            createAttempts().forEach(block)
         } catch (ex: Exception) {
             printCharactersUsed()
             throw ex
@@ -21,4 +21,22 @@ abstract class Runner(
             println(outcomeParser.getAllParsedCharacters().toCodeSnippet())
         }
     }
+
+    private fun createAttempts(): List<Attempt> =
+        (1..6).map(::Attempt)
 }
+
+data class Attempt(val number: Int) {
+    init {
+        require(number in 1..6) { "There can only be 1 to 6 tries" }
+    }
+
+    fun isFirst(): Boolean =
+        number == 1
+
+    fun isLast(): Boolean =
+        number == 6
+}
+
+private fun IntRange.toTries() =
+    map { Attempt(it) }

@@ -14,10 +14,10 @@ class InteractiveRunner(
     fun run() {
         println("Possible Answers: ${possibleWords.count()}")
 
-        forEachTry { tryNumber ->
+        forEachAttempt { (attemptNumber) ->
             wordGuesser.guessBasedOn(possibleWords, outcomeParser.getAllParsedCharacters()).let { guess ->
                 possibleWords = guess.allPossibleWords
-                guess.print(tryNumber)
+                guess.print(attemptNumber)
 
                 readOutcomes(
                     onQuit = {
@@ -54,8 +54,8 @@ class InteractiveRunner(
             }
         }
 
-    private fun Guess.print(tryNumber: Int) {
-        println("$tryNumber - Possible Answers: ${allPossibleWords.count()}")
+    private fun Guess.print(attemptNumber: Int) {
+        println("$attemptNumber - Possible Answers: ${allPossibleWords.count()}")
         println(guessedWord)
     }
 }
