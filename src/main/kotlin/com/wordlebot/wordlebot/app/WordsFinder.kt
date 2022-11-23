@@ -11,6 +11,6 @@ class WordsFinder {
                 .readText()
                 .split("\n")
                 .filter { it.isNotEmpty() }
-                .map { Word(it) }
+                .map(::Word)
     }
 }

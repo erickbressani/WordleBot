@@ -33,4 +33,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	maxParallelForks = 100
+	minHeapSize = "512m"
+	maxHeapSize = "1024m"
 }
