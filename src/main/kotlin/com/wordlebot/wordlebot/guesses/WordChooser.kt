@@ -13,19 +13,19 @@ class WordChooser {
         toCharDetailsMap().toCharScoreMap()
 
     private fun List<Word>.getScorePerWord(getCharScoreBy: (Char) -> (CharScore)): Map<Word, Int> =
-        associateWith { (word) -> getScoreOf(word, getCharScoreBy) }
+        associateWith { word -> getScoreOf(word, getCharScoreBy) }
 
     private fun Map<Word, Int>.getWordWithHighestScore(): Word =
         maxByOrNull { it.value }!!.key
 
-    private fun getScoreOf(word: String, getCharScoreBy: (Char) -> (CharScore)): Int =
-        word.getScoreForEachRecurrentChar(getCharScoreBy) + word.getScoreForEachCharInSamePositions(getCharScoreBy)
+    private fun getScoreOf(word: Word, getCharScoreBy: (Char) -> (CharScore)): Int =
+        word.getScoreForEachRecurrentChar(getCharScoreBy) + word.getScoreForEachCharInSamePositions(getCharScoreBy) + word.vowels.count()
 
-    private fun String.getScoreForEachRecurrentChar(getCharScoreBy: (Char) -> (CharScore)): Int =
-        map { it }.distinct().sumOf { getCharScoreBy(it).foundCount } * 2
+    private fun Word.getScoreForEachRecurrentChar(getCharScoreBy: (Char) -> (CharScore)): Int =
+        distinctChars.sumOf { getCharScoreBy(it).foundCount } * 2
 
-    private fun String.getScoreForEachCharInSamePositions(getCharScoreBy: (Char) -> (CharScore)): Int =
-        mapIndexed { index, char -> getCharScoreBy(char).scoreIn(index) }.sum()
+    private fun Word.getScoreForEachCharInSamePositions(getCharScoreBy: (Char) -> (CharScore)): Int =
+        chars.mapIndexed { index, char -> getCharScoreBy(char).scoreIn(index) }.sum()
 
     companion object {
         private fun List<Word>.toCharDetailsMap(): Map<Char, List<CharDetail>> =
