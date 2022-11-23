@@ -1,5 +1,6 @@
 package com.wordlebot.wordlebot.runners
 
+import com.wordlebot.wordlebot.guesses.Guess
 import com.wordlebot.wordlebot.guesses.WordGuesser
 import com.wordlebot.wordlebot.models.Word
 import com.wordlebot.wordlebot.outcomes.Outcome
@@ -24,7 +25,7 @@ class AutoPlayRunner(
                         .getOutcomesBasedOn(correctAnswer)
                         .let { outcomes ->
                             outcomeParser.add(guessedWord, outcomes)
-                            guessedWord.print(attemptNumber, outcomes)
+                            print(attemptNumber, outcomes)
                         }
 
                     if (guessedWord == correctAnswer) {
@@ -88,11 +89,11 @@ class AutoPlayRunner(
             .map { outcomesPerIndex[it]!! }
     }
 
-    private fun Word.print(attemptNumber: Int, outcomes: List<Outcome>) = with(StringBuilder()) {
+    private fun Guess.print(attemptNumber: Int, outcomes: List<Outcome>) = with(StringBuilder()) {
         if (printInConsole) {
             if (attemptNumber > 1) readln()
 
-            value.forEachIndexed { index, char ->
+            this@print.guessedWord.forEachCharIndexed { index, char ->
                 when(outcomes[index]) {
                     Outcome.InTheCorrectPosition -> append(ANSI_GREEN + char)
                     Outcome.AtLeastInTheAnswer -> append(ANSI_YELLOW + char)
@@ -100,7 +101,7 @@ class AutoPlayRunner(
                 }
             }
 
-            print("$attemptNumber - ${toString()} $ANSI_RESET")
+            print("$attemptNumber - ${toString()} $ANSI_RESET - Possible Answers: ${this@print.allPossibleWords.count()}")
         }
     }
 
