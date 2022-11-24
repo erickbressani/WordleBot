@@ -6,7 +6,6 @@ import com.wordlebot.wordlebot.guesses.WordMatcher
 import com.wordlebot.wordlebot.models.Word
 import com.wordlebot.wordlebot.outcomes.OutcomeParser
 import com.wordlebot.wordlebot.runners.AutoPlayRunner
-import org.junit.jupiter.api.Test
 import com.wordlebot.wordlebot.runners.Result
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.parallel.Execution
@@ -19,6 +18,16 @@ import org.junit.jupiter.params.provider.MethodSource
 class BatchTests {
 	private val possibleWords = WordsFinder.get()
 	private val batchSize = 500
+	private val scoreboardForAllWords = WordChooser.default.choseBasedOn(possibleWords)
+
+	private val wordChooser = object : WordChooser {
+		override fun choseBasedOn(possibleWords: List<Word>): Word {
+			if (possibleWords.count() == this@BatchTests.possibleWords.size) {
+				return scoreboardForAllWords
+			}
+			return WordChooser.default.choseBasedOn(possibleWords)
+		}
+	}
 
 	@ParameterizedTest
 	@MethodSource("batches")
@@ -27,7 +36,7 @@ class BatchTests {
 		var pureLuckCount = 0
 
 		possibleWords.getBatch(batchNumber).forEach { correctAnswer ->
-			val runner = AutoPlayRunner(possibleWords, OutcomeParser(), WordGuesser(WordMatcher(), WordChooser()), printInConsole = false)
+			val runner = AutoPlayRunner(possibleWords, OutcomeParser(), WordGuesser(WordMatcher(), wordChooser), printInConsole = false)
 
 			runner.run(correctAnswer).let {
 				when (it) {
