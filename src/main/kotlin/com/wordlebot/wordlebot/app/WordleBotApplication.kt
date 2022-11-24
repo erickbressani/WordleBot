@@ -1,5 +1,6 @@
 package com.wordlebot.wordlebot.app
 
+import com.wordlebot.wordlebot.guesses.WordChooserByScore
 import com.wordlebot.wordlebot.guesses.WordGuesser
 import com.wordlebot.wordlebot.guesses.WordMatcher
 import com.wordlebot.wordlebot.models.Word
@@ -36,11 +37,11 @@ private fun run(possibleWords: List<Word>) {
 }
 
 private fun runWithInteractiveRunner(possibleWords: List<Word>) =
-	InteractiveRunner(possibleWords, OutcomeParser(), WordGuesser(WordMatcher()))
+	InteractiveRunner(possibleWords, OutcomeParser(), WordGuesser(WordMatcher(), WordChooserByScore()))
 		.run()
 
 private fun runWithAutoPlayRunner(possibleWords: List<Word>) =
-	AutoPlayRunner(possibleWords, OutcomeParser(), WordGuesser(WordMatcher()))
+	AutoPlayRunner(possibleWords, OutcomeParser(), WordGuesser(WordMatcher(), WordChooserByScore()))
 		.run(askForCorrectAnswer())
 
 private fun askForCorrectAnswer(): Word {

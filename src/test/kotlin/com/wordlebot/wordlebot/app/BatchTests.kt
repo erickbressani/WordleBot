@@ -1,6 +1,7 @@
 package com.wordlebot.wordlebot.app
 
 import com.wordlebot.wordlebot.guesses.WordChooser
+import com.wordlebot.wordlebot.guesses.WordChooserByScore
 import com.wordlebot.wordlebot.guesses.WordGuesser
 import com.wordlebot.wordlebot.guesses.WordMatcher
 import com.wordlebot.wordlebot.models.Word
@@ -18,14 +19,14 @@ import org.junit.jupiter.params.provider.MethodSource
 class BatchTests {
 	private val possibleWords = WordsFinder.get()
 	private val batchSize = 500
-	private val scoreboardForAllWords = WordChooser.default.choseBasedOn(possibleWords)
+	private val scoreboardForAllWords = WordChooserByScore().choseBasedOn(possibleWords)
 
 	private val wordChooser = object : WordChooser {
 		override fun choseBasedOn(possibleWords: List<Word>): Word {
 			if (possibleWords.count() == this@BatchTests.possibleWords.size) {
 				return scoreboardForAllWords
 			}
-			return WordChooser.default.choseBasedOn(possibleWords)
+			return WordChooserByScore().choseBasedOn(possibleWords)
 		}
 	}
 
