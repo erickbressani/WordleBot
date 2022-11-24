@@ -14,7 +14,7 @@ class OutcomeParser {
             when (outcomes[index]) {
                 Outcome.InTheCorrectPosition -> addInTheCorrectPosition(char, index)
                 Outcome.AtLeastInTheAnswer -> addAtLeastInTheAnswer(char, index)
-                Outcome.NotInTheAnswer -> addNotInTheAnswer(char)
+                Outcome.NotInTheAnswer -> addNotInTheAnswer(char, index)
             }
         }
     }
@@ -22,21 +22,19 @@ class OutcomeParser {
     private fun addInTheCorrectPosition(char: Char, position: Int) {
         when (val existent = characters.firstOrNull { it.value == char }) {
             null -> characters.add(
-                Character.InTheAnswer(
-                    char,
-                    mutableSetOf(position),
-                    characters.inTheAnswerPositions(besidesOf = position)
-                )
+                Character.InTheAnswer(char).apply {
+                    markAsFoundIn(position)
+                    characters.inTheAnswerPositions(besidesOf = position).forEach(::markAsNotFoundIn)
+                }
             )
-            is Character.InTheAnswer -> existent.positions.add(position)
+            is Character.InTheAnswer -> existent.markAsFoundIn(position)
             is Character.NotInTheAnswer -> {
                 characters.remove(existent)
                 characters.add(
-                    Character.InTheAnswer(
-                        char,
-                        mutableSetOf(position),
-                        allPositionsBut(setOf(position))
-                    )
+                    Character.InTheAnswer(char).apply {
+                        markAsFoundIn(position)
+                        allPositionsBut(setOf(position)).forEach(::markAsNotFoundIn)
+                    }
                 )
             }
         }
@@ -45,7 +43,7 @@ class OutcomeParser {
             .filter { it.value != char }
             .forEach {
                 when (it) {
-                    is Character.InTheAnswer -> it.notInThePosition.add(position)
+                    is Character.InTheAnswer -> it.markAsNotFoundIn(position)
                     is Character.NotInTheAnswer -> {}
                 }
             }
@@ -54,26 +52,23 @@ class OutcomeParser {
     private fun addAtLeastInTheAnswer(char: Char, notInThePosition: Int) {
         when (val existent = characters.firstOrNull { it.value == char }) {
             null -> characters.add(
-                Character.InTheAnswer(
-                    char,
-                    mutableSetOf(),
-                    (mutableSetOf(notInThePosition) + characters.inTheAnswerPositions()).toMutableSet()
-                )
+                Character.InTheAnswer(char).apply {
+                    (mutableSetOf(notInThePosition) + characters.inTheAnswerPositions()).forEach(::markAsNotFoundIn)
+                }
             )
-            is Character.InTheAnswer -> existent.also { it.notInThePosition.add(notInThePosition) }
+            is Character.InTheAnswer -> existent.also { it.markAsNotFoundIn(notInThePosition) }
             is Character.NotInTheAnswer -> throw InvalidCharactersInParserException()
         }
     }
 
-    private fun addNotInTheAnswer(char: Char) {
+    private fun addNotInTheAnswer(char: Char, index: Int) {
         when (val existent = characters.firstOrNull { it.value == char }) {
             null -> characters.add(Character.NotInTheAnswer(char))
             is Character.InTheAnswer -> {
-                if (existent.positions.any()) {
-                    existent.notInThePosition.addAll(allPositionsBut(existent.positions))
+                if (existent.getPositionsMarkedAsFound().any()) {
+                    with(existent) { allPositionsBut(getPositionsMarkedAsFound()).forEach(::markAsNotFoundIn) }
                 } else {
-                    characters.remove(existent)
-                    characters.add(Character.NotInTheAnswer(char))
+                    existent.markAsNotFoundIn(index)
                 }
             }
             is Character.NotInTheAnswer -> {}
@@ -81,7 +76,7 @@ class OutcomeParser {
     }
 
     private fun allPositionsBut(positions: Set<Int>) =
-        listOf(0, 1, 2, 3, 4).filter { !positions.contains(it) }.toMutableSet()
+        (0..4).filter { !positions.contains(it) }.toMutableSet()
 }
 
 enum class Outcome {

@@ -41,7 +41,7 @@ class BatchTests {
 			}
 		}
 
-		expectedOutcome shouldBe ExpectedOutcome(pureLuckCount, correctCount)
+		ExpectedOutcome(pureLuckCount, correctCount) shouldBe expectedOutcome
 	}
 
 	private fun List<Word>.getBatch(batchNumber: Int): List<Word> =
@@ -72,8 +72,8 @@ class BatchTests {
 			Arguments.of(20, ExpectedOutcome(33, 441)),
 			Arguments.of(21, ExpectedOutcome(29, 433)),
 			Arguments.of(22, ExpectedOutcome(33, 431)),
-			Arguments.of(23, ExpectedOutcome(21, 394)),
-			Arguments.of(24, ExpectedOutcome(19, 441)),
+			Arguments.of(23, ExpectedOutcome(21, 395)),
+			Arguments.of(24, ExpectedOutcome(19, 440)),
 			Arguments.of(25, ExpectedOutcome(24, 407)),
 			Arguments.of(26, ExpectedOutcome(18, 429)),
 			Arguments.of(27, ExpectedOutcome(18, 419)),
@@ -84,4 +84,4 @@ class BatchTests {
 	}
 }
 
-data class ExpectedOutcome(val correctCount: Int, val lucklyCorrectCount: Int)
+data class ExpectedOutcome(val lucklyCorrectCount: Int, val correctCount: Int)
