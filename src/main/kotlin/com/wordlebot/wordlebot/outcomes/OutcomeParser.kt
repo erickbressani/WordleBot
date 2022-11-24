@@ -65,10 +65,12 @@ class OutcomeParser {
         when (val existent = characters.firstOrNull { it.value == char }) {
             null -> characters.add(Character.NotInTheAnswer(char))
             is Character.InTheAnswer -> {
-                if (existent.getPositionsMarkedAsFound().any()) {
-                    with(existent) { allPositionsBut(getPositionsMarkedAsFound()).forEach(::markAsNotFoundIn) }
-                } else {
-                    existent.markAsNotFoundIn(index)
+                with (existent) {
+                    if (positions.any()) {
+                        allPositionsBut(positions).forEach(::markAsNotFoundIn)
+                    } else {
+                        markAsNotFoundIn(index)
+                    }
                 }
             }
             is Character.NotInTheAnswer -> {}

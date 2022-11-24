@@ -48,7 +48,7 @@ internal class OutcomeParserTest {
             characters.all { it is Character.InTheAnswer }  shouldBe true
             wordWithUniqueLetters.forEachCharIndexed { index, char ->
                 characters[index].value shouldBe char
-                (characters[index] as Character.InTheAnswer).getPositionsMarkedAsNotFound() shouldBe mutableListOf(index)
+                (characters[index] as Character.InTheAnswer).notInThePositions shouldBe mutableListOf(index)
             }
         }
     }
@@ -71,7 +71,7 @@ internal class OutcomeParserTest {
             characters.all { it is Character.InTheAnswer }  shouldBe true
             wordWithUniqueLetters.forEachCharIndexed { index, char ->
                 characters[index].value shouldBe char
-                (characters[index] as Character.InTheAnswer).getPositionsMarkedAsNotFound() shouldBe
+                (characters[index] as Character.InTheAnswer).notInThePositions shouldBe
                         listOf(0, 1, 2, 3, 4).filter { it != index }.toMutableList()
             }
         }
@@ -96,14 +96,14 @@ internal class OutcomeParserTest {
 
             (characters[0] as Character.InTheAnswer) should {
                 it.value shouldBe 'e'
-                it.getPositionsMarkedAsNotFound() shouldBe mutableListOf(2, 3, 4)
-                it.getPositionsMarkedAsFound() shouldBe mutableListOf(0, 1)
+                it.notInThePositions shouldBe mutableListOf(2, 3, 4)
+                it.positions shouldBe mutableListOf(0, 1)
             }
 
             (characters[1] as Character.InTheAnswer) should {
                 it.value shouldBe 'a'
-                it.getPositionsMarkedAsNotFound() shouldBe mutableListOf(0, 1)
-                it.getPositionsMarkedAsFound() shouldBe mutableListOf(2, 3, 4)
+                it.notInThePositions shouldBe mutableListOf(0, 1)
+                it.positions shouldBe mutableListOf(2, 3, 4)
             }
         }
     }
@@ -124,8 +124,8 @@ internal class OutcomeParserTest {
         outcomeParser.getAllParsedCharacters().let { characters ->
             characters.filter { it.value == 'u' } should {
                 it.shouldHaveSize(1)
-                (it[0] as Character.InTheAnswer).getPositionsMarkedAsFound() shouldBe listOf(1)
-                (it[0] as Character.InTheAnswer).getPositionsMarkedAsNotFound() shouldBe listOf(0, 2, 3, 4)
+                (it[0] as Character.InTheAnswer).positions shouldBe listOf(1)
+                (it[0] as Character.InTheAnswer).notInThePositions shouldBe listOf(0, 2, 3, 4)
             }
         }
     }
@@ -146,8 +146,8 @@ internal class OutcomeParserTest {
         outcomeParser.getAllParsedCharacters().let { characters ->
             characters.filter { it.value == 'u' } should {
                 it.shouldHaveSize(1)
-                (it[0] as Character.InTheAnswer).getPositionsMarkedAsFound() shouldBe listOf(3)
-                (it[0] as Character.InTheAnswer).getPositionsMarkedAsNotFound() shouldBe listOf(0, 1, 2, 4)
+                (it[0] as Character.InTheAnswer).positions shouldBe listOf(3)
+                (it[0] as Character.InTheAnswer).notInThePositions shouldBe listOf(0, 1, 2, 4)
             }
         }
     }
@@ -171,14 +171,14 @@ internal class OutcomeParserTest {
 
             (characters[0] as Character.InTheAnswer) should {
                 it.value shouldBe 'e'
-                it.getPositionsMarkedAsNotFound() shouldBe mutableListOf(0, 3, 4)
-                it.getPositionsMarkedAsFound() shouldBe mutableListOf(1)
+                it.notInThePositions shouldBe mutableListOf(0, 3, 4)
+                it.positions shouldBe mutableListOf(1)
             }
 
             (characters[1] as Character.InTheAnswer) should {
                 it.value shouldBe 'a'
-                it.getPositionsMarkedAsNotFound() shouldBe mutableListOf(2, 1)
-                it.getPositionsMarkedAsFound() shouldBe mutableListOf(3, 4)
+                it.notInThePositions shouldBe mutableListOf(2, 1)
+                it.positions shouldBe mutableListOf(3, 4)
             }
         }
     }
@@ -221,26 +221,26 @@ internal class OutcomeParserTest {
 
             (characters[0] as Character.InTheAnswer) should {
                 it.value shouldBe 'a'
-                it.getPositionsMarkedAsNotFound() shouldBe mutableListOf(2, 4)
-                it.getPositionsMarkedAsFound() shouldBe mutableListOf(0)
+                it.notInThePositions shouldBe mutableListOf(2, 4)
+                it.positions shouldBe mutableListOf(0)
             }
 
             (characters[1] as Character.InTheAnswer) should {
                 it.value shouldBe 'b'
-                it.getPositionsMarkedAsNotFound() shouldBe mutableListOf(1, 0, 2, 4)
-                it.getPositionsMarkedAsFound() shouldBe mutableListOf(3)
+                it.notInThePositions shouldBe mutableListOf(1, 0, 2, 4)
+                it.positions shouldBe mutableListOf(3)
             }
 
             (characters[7] as Character.InTheAnswer) should {
                 it.value shouldBe 'h'
-                it.getPositionsMarkedAsNotFound() shouldBe mutableListOf(0, 4)
-                it.getPositionsMarkedAsFound() shouldBe listOf(2)
+                it.notInThePositions shouldBe mutableListOf(0, 4)
+                it.positions shouldBe listOf(2)
             }
 
             (characters[9] as Character.InTheAnswer) should {
                 it.value shouldBe 'j'
-                it.getPositionsMarkedAsNotFound() shouldBe mutableListOf(0, 2)
-                it.getPositionsMarkedAsFound() shouldBe listOf(4)
+                it.notInThePositions shouldBe mutableListOf(0, 2)
+                it.positions shouldBe listOf(4)
             }
         }
     }

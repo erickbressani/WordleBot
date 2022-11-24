@@ -26,12 +26,12 @@ class WordMatcher {
         contains(character.value)
 
     private fun String.hasInEveryPositionOf(character: Character.InTheAnswer): Boolean = with(character) {
-        getPositionsMarkedAsFound().let { it.isEmpty() || it.all { position -> this@hasInEveryPositionOf[position] == value } }
+        positions.isEmpty() || positions.all { position -> this@hasInEveryPositionOf[position] == value }
     }
 
     private fun String.hasAnyInIncorrectPositionOf(character: Character.InTheAnswer): Boolean = with(character) {
         forEachIndexed { index, char ->
-            if (getPositionsMarkedAsNotFound().contains(index) && char == value) {
+            if (notInThePositions.contains(index) && char == value) {
                 return true
             }
         }
