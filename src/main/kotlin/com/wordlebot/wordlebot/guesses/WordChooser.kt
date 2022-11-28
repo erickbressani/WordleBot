@@ -10,7 +10,17 @@ class WordChooserByScore: WordChooser {
     override fun choseBasedOn(possibleWords: List<Word>): Word = with(possibleWords) {
         getScorePerChar()
             .run { getScorePerWord { char -> this[char]!! } }
-            .getWordWithHighestScore()
+            .let { scoreBoard ->
+                scoreBoard.getWordsWithHighestScore().let { topWords ->
+                    if (topWords.count() > 1) {
+                        topWords
+                            .increaseScoreBasedOnRecurrentCharCombinations(possibleWords)
+                            .getWordWithHighestScore()
+                    } else {
+                        topWords.keys.first()
+                    }
+                }
+            }
     }
 
     private fun List<Word>.getScorePerChar(): Map<Char, CharScore> =
@@ -18,6 +28,20 @@ class WordChooserByScore: WordChooser {
 
     private fun List<Word>.getScorePerWord(getCharScoreBy: (Char) -> (CharScore)): Map<Word, Int> =
         associateWith { word -> getScoreOf(word, getCharScoreBy) }
+
+    private fun Map<Word, Int>.getWordsWithHighestScore(): Map<Word, Int> =
+        filter { (_, score) -> score == maxByOrNull { it.value }!!.value }
+
+    private fun Map<Word, Int>.increaseScoreBasedOnRecurrentCharCombinations(possibleWords: List<Word>): Map<Word, Int> =
+        map { (word, score) ->
+            fun Word.firstPart() = value.take(2)
+            fun Word.lastPart() = value.takeLast(3)
+
+            val countWithFirstPart = possibleWords.count { it.lastPart() == word.firstPart() }
+            val countWithLastPart = possibleWords.count { it.lastPart() == word.lastPart() }
+
+            word to score + countWithFirstPart + countWithLastPart
+        }.toMap()
 
     private fun Map<Word, Int>.getWordWithHighestScore(): Word =
         maxByOrNull { it.value }!!.key
