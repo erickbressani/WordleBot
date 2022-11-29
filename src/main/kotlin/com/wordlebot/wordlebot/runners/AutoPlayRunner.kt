@@ -16,8 +16,8 @@ class AutoPlayRunner(
         var result = Result.NotFound
         var possibleWords = words
 
-        forEachAttempt { (attemptNumber) ->
-            with(wordGuesser.guessBasedOn(possibleWords, outcomeParser.getAllParsedCharacters())) {
+        forEachAttempt { attempt ->
+            with(wordGuesser.guessBasedOn(possibleWords, outcomeParser.getAllParsedCharacters(), attempt)) {
                 if (result == Result.NotFound) {
                     possibleWords = allPossibleWords
 
@@ -25,11 +25,11 @@ class AutoPlayRunner(
                         .getOutcomesBasedOn(correctAnswer)
                         .let { outcomes ->
                             outcomeParser.add(guessedWord, outcomes)
-                            print(attemptNumber, outcomes)
+                            print(attempt, outcomes)
                         }
 
                     if (guessedWord == correctAnswer) {
-                        result = if (allPossibleWords.count() > 1 && attemptNumber == 6) Result.LucklyCorrect else Result.Correct
+                        result = if (allPossibleWords.count() > 1 && attempt.isLast()) Result.LucklyCorrect else Result.Correct
                     }
                 }
             }
@@ -89,9 +89,9 @@ class AutoPlayRunner(
             .map { outcomesPerIndex[it]!! }
     }
 
-    private fun Guess.print(attemptNumber: Int, outcomes: List<Outcome>) = with(StringBuilder()) {
+    private fun Guess.print(attempt: Attempt, outcomes: List<Outcome>) = with(StringBuilder()) {
         if (printInConsole) {
-            if (attemptNumber > 1) readln()
+            if (!attempt.isFirst()) readln()
 
             this@print.guessedWord.forEachCharIndexed { index, char ->
                 when(outcomes[index]) {
@@ -101,7 +101,7 @@ class AutoPlayRunner(
                 }
             }
 
-            print("$attemptNumber - ${toString()} $ANSI_RESET - Possible Answers: ${this@print.allPossibleWords.count()}")
+            print("$attempt - ${toString()} $ANSI_RESET - Possible Answers: ${this@print.allPossibleWords.count()}")
         }
     }
 

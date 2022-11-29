@@ -26,17 +26,20 @@ abstract class Runner(
         (1..6).map(::Attempt)
 }
 
-data class Attempt(val number: Int) {
+data class Attempt(private val number: Int) {
     init {
         require(number in 1..6) { "There can only be 1 to 6 tries" }
     }
+
+    fun isBeforeAttempt(attemptNumber: Int) =
+        number < attemptNumber
 
     fun isFirst(): Boolean =
         number == 1
 
     fun isLast(): Boolean =
         number == 6
-}
 
-private fun IntRange.toTries() =
-    map { Attempt(it) }
+    override fun toString(): String =
+        number.toString()
+}

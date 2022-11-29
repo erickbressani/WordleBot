@@ -47,7 +47,7 @@ class WordChooserByScore: WordChooser {
         maxByOrNull { it.value }!!.key
 
     private fun getScoreOf(word: Word, getCharScoreBy: (Char) -> (CharScore)): Int =
-        word.getScoreForEachRecurrentChar(getCharScoreBy) + word.getScoreForEachCharInSamePositions(getCharScoreBy) + word.vowels.count()
+        word.getScoreForEachRecurrentChar(getCharScoreBy) + word.getScoreForEachCharInSamePositions(getCharScoreBy)
 
     private fun Word.getScoreForEachRecurrentChar(getCharScoreBy: (Char) -> (CharScore)): Int =
         distinctChars.sumOf { getCharScoreBy(it).foundCount } * 2
