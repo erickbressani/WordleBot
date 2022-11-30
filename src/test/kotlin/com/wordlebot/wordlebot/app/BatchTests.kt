@@ -60,8 +60,8 @@ class BatchTests {
 	companion object {
 		@JvmStatic
 		fun batches() = listOf(
-			Arguments.of(1, ExpectedOutcome(lucklyCorrectCount = 4, correctCount = 493)),
-			Arguments.of(2, ExpectedOutcome(lucklyCorrectCount = 10, correctCount = 486)),
+			Arguments.of(1, ExpectedOutcome(lucklyCorrectCount = 4, correctCount = 494)),
+			Arguments.of(2, ExpectedOutcome(lucklyCorrectCount = 9, correctCount = 487)),
 			Arguments.of(3, ExpectedOutcome(lucklyCorrectCount = 8, correctCount =483)),
 			Arguments.of(4, ExpectedOutcome(lucklyCorrectCount = 15, correctCount =480)),
 			Arguments.of(5, ExpectedOutcome(lucklyCorrectCount = 10, correctCount =490)),
@@ -69,27 +69,27 @@ class BatchTests {
 			Arguments.of(7, ExpectedOutcome(lucklyCorrectCount = 24, correctCount =481)),
 			Arguments.of(8, ExpectedOutcome(lucklyCorrectCount = 16, correctCount =482)),
 			Arguments.of(9, ExpectedOutcome(lucklyCorrectCount = 42, correctCount =484)),
-			Arguments.of(10, ExpectedOutcome(lucklyCorrectCount = 44, correctCount=470)),
+			Arguments.of(10, ExpectedOutcome(lucklyCorrectCount = 43, correctCount=470)),
 			Arguments.of(11, ExpectedOutcome(lucklyCorrectCount = 18, correctCount=478)),
 			Arguments.of(12, ExpectedOutcome(lucklyCorrectCount = 12, correctCount = 482)),
 			Arguments.of(13, ExpectedOutcome(lucklyCorrectCount = 46, correctCount = 457)),
-			Arguments.of(14, ExpectedOutcome(lucklyCorrectCount = 14, correctCount = 465)),
+			Arguments.of(14, ExpectedOutcome(lucklyCorrectCount = 13, correctCount = 466)),
 			Arguments.of(15, ExpectedOutcome(lucklyCorrectCount = 17, correctCount = 468)),
 			Arguments.of(16, ExpectedOutcome(lucklyCorrectCount = 8, correctCount= 489)),
-			Arguments.of(17, ExpectedOutcome(lucklyCorrectCount = 13, correctCount= 486)),
+			Arguments.of(17, ExpectedOutcome(lucklyCorrectCount = 9, correctCount= 490)),
 			Arguments.of(18, ExpectedOutcome(lucklyCorrectCount = 3, correctCount= 490)),
 			Arguments.of(19, ExpectedOutcome(lucklyCorrectCount = 9, correctCount= 482)),
 			Arguments.of(20, ExpectedOutcome(lucklyCorrectCount = 7, correctCount= 487)),
 			Arguments.of(21, ExpectedOutcome(lucklyCorrectCount = 11, correctCount= 466)),
 			Arguments.of(22, ExpectedOutcome(lucklyCorrectCount = 7, correctCount = 476)),
-			Arguments.of(23, ExpectedOutcome(lucklyCorrectCount = 7, correctCount = 442)),
+			Arguments.of(23, ExpectedOutcome(lucklyCorrectCount = 7, correctCount = 443)),
 			Arguments.of(24, ExpectedOutcome(lucklyCorrectCount = 4, correctCount = 468)),
-			Arguments.of(25, ExpectedOutcome(lucklyCorrectCount = 7, correctCount = 469)),
-			Arguments.of(26, ExpectedOutcome(lucklyCorrectCount = 6, correctCount = 481)),
-			Arguments.of(27, ExpectedOutcome(lucklyCorrectCount = 14, correctCount = 484)),
+			Arguments.of(25, ExpectedOutcome(lucklyCorrectCount = 6, correctCount = 470)),
+			Arguments.of(26, ExpectedOutcome(lucklyCorrectCount = 5, correctCount = 482)),
+			Arguments.of(27, ExpectedOutcome(lucklyCorrectCount = 12, correctCount = 486)),
 			Arguments.of(28, ExpectedOutcome(lucklyCorrectCount = 13, correctCount = 466)),
 			Arguments.of(29, ExpectedOutcome(lucklyCorrectCount = 38, correctCount = 407)),
-			Arguments.of(30, ExpectedOutcome(lucklyCorrectCount = 12, correctCount = 314))
+			Arguments.of(30, ExpectedOutcome(lucklyCorrectCount = 11, correctCount = 314))
 		)
 	}
 }

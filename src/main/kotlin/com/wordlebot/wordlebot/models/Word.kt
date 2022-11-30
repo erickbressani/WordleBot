@@ -13,9 +13,6 @@ data class Word(val value: String) {
     fun forEachCharIndexed(action: (Int, Char) -> Unit) =
         value.forEachIndexed(action)
 
-    fun toGuess(allPossibleWords: List<Word>): Guess =
-        Guess(this, allPossibleWords)
-
     fun containsAny(characters: List<Character>): Boolean =
         characters.map { it.value }.any(value::contains)
 

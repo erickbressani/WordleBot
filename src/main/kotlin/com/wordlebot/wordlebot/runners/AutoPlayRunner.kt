@@ -19,7 +19,7 @@ class AutoPlayRunner(
         forEachAttempt { attempt ->
             with(wordGuesser.guessBasedOn(possibleWords, outcomeParser.getAllParsedCharacters(), attempt)) {
                 if (result == Result.NotFound) {
-                    possibleWords = allPossibleWords
+                    possibleWords = nextWordsToTry
 
                     guessedWord
                         .getOutcomesBasedOn(correctAnswer)
@@ -29,7 +29,7 @@ class AutoPlayRunner(
                         }
 
                     if (guessedWord == correctAnswer) {
-                        result = if (allPossibleWords.count() > 1 && attempt.isLast()) Result.LucklyCorrect else Result.Correct
+                        result = if (nextWordsToTry.count() > 1 && attempt.isLast()) Result.LucklyCorrect else Result.Correct
                     }
                 }
             }

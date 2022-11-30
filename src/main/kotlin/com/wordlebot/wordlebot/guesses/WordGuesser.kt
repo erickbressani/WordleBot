@@ -6,23 +6,20 @@ import com.wordlebot.wordlebot.runners.Attempt
 
 class WordGuesser(private val wordMatcher: WordMatcher, private val wordChooser: WordChooser) {
     fun guessBasedOn(possibleWords: List<Word>, characters: List<Character>, attempt: Attempt): Guess =
-        if (attempt.isBeforeAttempt(4)) {
-            guessWithUnusedChars(possibleWords, characters)
-        } else {
-            guessConsideringOnlyMatches(possibleWords, characters)
-        }
-
-    private fun guessWithUnusedChars(possibleWords: List<Word>, characters: List<Character>): Guess =
-        possibleWords
-            .filter { word -> !word.containsAny(characters) }
-            .ifEmpty { possibleWords }
-            .let(wordChooser::choseBasedOn)
-            .toGuess(possibleWords)
-
-    private fun guessConsideringOnlyMatches(possibleWords: List<Word>, characters: List<Character>): Guess =
         wordMatcher.findMatchesBasedOn(possibleWords, characters).let { matches ->
-            wordChooser.choseBasedOn(matches).toGuess(matches)
+            if (attempt.isBeforeAttempt(4) && matches.count() > 4) {
+                possibleWords
+                    .filter { word -> !word.containsAny(characters) }
+                    .ifEmpty { matches }
+                    .let(wordChooser::choseBasedOn)
+                    .toGuess(possibleWords, matches)
+            } else {
+                wordChooser.choseBasedOn(matches).toGuess(matches)
+            }
         }
+
+    private fun Word.toGuess(nextWordsToTry: List<Word>, allPossibleWords: List<Word>? = null): Guess =
+        Guess(this, nextWordsToTry, allPossibleWords ?: nextWordsToTry)
 }
 
-data class Guess(val guessedWord: Word, val allPossibleWords: List<Word>)
+data class Guess(val guessedWord: Word, val nextWordsToTry: List<Word>, val allPossibleWords: List<Word>)
