@@ -55,7 +55,7 @@ class InteractiveRunner(
         }
 
     private fun Guess.print(attempt: Attempt) {
-        println("$attempt - Possible Answers: ${possibleWords.count()}")
+        println("$attempt - Possible Answers: ${allPossibleWords.count()}")
         println(guessedWord)
     }
 }
