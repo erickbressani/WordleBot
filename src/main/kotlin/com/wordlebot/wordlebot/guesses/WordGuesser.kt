@@ -8,15 +8,23 @@ class WordGuesser(private val wordMatcher: WordMatcher, private val wordChooser:
     fun guessBasedOn(possibleWords: List<Word>, characters: List<Character>, attempt: Attempt): Guess =
         wordMatcher.findMatchesBasedOn(possibleWords, characters).let { matches ->
             if (attempt.isBeforeAttempt(4) && matches.count() > 4) {
-                possibleWords
-                    .filter { word -> !word.containsAny(characters) }
-                    .ifEmpty { matches }
-                    .let(wordChooser::choseBasedOn)
-                    .toGuess(possibleWords, matches)
+                chooseWithUnusedCharacters(possibleWords, characters, matches)
             } else {
-                wordChooser.choseBasedOn(matches).toGuess(matches)
+                chooseWithMatches(matches)
             }
         }
+
+    private fun chooseWithUnusedCharacters(possibleWords: List<Word>, characters: List<Character>, matches: List<Word>): Guess =
+        possibleWords
+            .filter { word -> !word.containsAny(characters) }
+            .ifEmpty { matches }
+            .let { wordChooser.choseBasedOn(it, matches) }
+            .toGuess(possibleWords, matches)
+
+    private fun chooseWithMatches(matches: List<Word>): Guess =
+        wordChooser
+            .choseBasedOn(matches, matches)
+            .toGuess(matches)
 
     private fun Word.toGuess(nextWordsToTry: List<Word>, allPossibleWords: List<Word>? = null): Guess =
         Guess(this, nextWordsToTry, allPossibleWords ?: nextWordsToTry)

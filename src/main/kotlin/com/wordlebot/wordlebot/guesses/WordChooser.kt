@@ -3,25 +3,24 @@ package com.wordlebot.wordlebot.guesses
 import com.wordlebot.wordlebot.models.Word
 
 fun interface WordChooser {
-    fun choseBasedOn(possibleWords: List<Word>): Word
+    fun choseBasedOn(wordsToGuess: List<Word>, currentMatches: List<Word>): Word
 }
 
 class WordChooserByScore: WordChooser {
-    override fun choseBasedOn(possibleWords: List<Word>): Word = with(possibleWords) {
-        getScorePerChar()
-            .run { getScorePerWord { char -> this[char]!! } }
+    override fun choseBasedOn(wordsToGuess: List<Word>, currentMatches: List<Word>): Word =
+        currentMatches.getScorePerChar()
+            .run { wordsToGuess.getScorePerWord { char -> this[char] ?: CharScore.zero } }
             .let { scoreBoard ->
                 scoreBoard.getWordsWithHighestScore().let { topWords ->
                     if (topWords.count() > 1) {
                         topWords
-                            .increaseScoreBasedOnRecurrentCharCombinations(possibleWords)
+                            .increaseScoreBasedOnRecurrentCharCombinations(wordsToGuess)
                             .getWordWithHighestScore()
                     } else {
                         topWords.keys.first()
                     }
                 }
             }
-    }
 
     private fun List<Word>.getScorePerChar(): Map<Char, CharScore> =
         toCharDetailsMap().toCharScoreMap()
@@ -93,6 +92,10 @@ data class CharScore(
             4 -> inPosition5
             else -> throw IllegalArgumentException()
         }
+
+    companion object {
+        val zero = CharScore(0, 0, 0, 0, 0, 0)
+    }
 }
 
 data class CharDetail(val value: Char, val position: CharPosition, val fromWord: String) {

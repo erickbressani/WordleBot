@@ -9,7 +9,7 @@ internal class WordChooserByScoreTest {
     fun `should choose word with highest score`() {
         val chooser = WordChooserByScore()
 
-        val word = chooser.choseBasedOn(WORDS)
+        val word = chooser.choseBasedOn(WORDS, WORDS)
 
         word.value shouldBe "abaci"
     }
