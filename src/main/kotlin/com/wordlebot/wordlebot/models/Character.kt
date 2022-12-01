@@ -39,6 +39,9 @@ fun List<Character>.inTheAnswer(): List<Character.InTheAnswer> =
 fun List<Character>.inTheAnswerPositions(besidesOf: Int? = null): MutableSet<Int> =
     inTheAnswer().map { it.positions }.flatten().filter { it != besidesOf }.toMutableSet()
 
+fun List<Character>.inCorrectPositionCount(): Int =
+    filterIsInstance<Character.InTheAnswer>().sumOf { it.positions.count() }
+
 fun List<Character>.contains(char: Char) =
     map { it.value }.contains(char)
 
