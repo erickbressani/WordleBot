@@ -81,7 +81,15 @@ class AutoPlayRunner(
             if (charInAnswerCount == correctInOutcomesCount) {
                 outcomesPerIndex[index] = Outcome.NotInTheAnswer
             } else {
-                outcomesPerIndex[index] = Outcome.AtLeastInTheAnswer
+                val charOccurrencesBeforeOnGuess = value.take(index).count { it == char }
+
+                outcomesPerIndex[index] = (charInAnswerCount - charOccurrencesBeforeOnGuess).let {
+                    if (it <= 0) {
+                        Outcome.NotInTheAnswer
+                    } else {
+                        Outcome.AtLeastInTheAnswer
+                    }
+                }
             }
         }
 
