@@ -98,5 +98,5 @@ class BatchTests {
 
 data class TestOutcome(val lucklyCorrectCount: Int, val correctCount: Int) {
 	fun toCodeSnippet(batchNumber: Int): String =
-		"Arguments.of($batchNumber, $this),"
+		"Arguments.of($batchNumber, $this),".replace("=", " = ")
 }
