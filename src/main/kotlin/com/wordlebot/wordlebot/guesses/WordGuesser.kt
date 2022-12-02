@@ -15,8 +15,13 @@ class WordGuesser(private val wordMatcher: WordMatcher, private val wordChooser:
             }
         }
 
-    private fun shouldConsiderOnlyMatches(characters: List<Character>, attempt: Attempt, matches: List<Word>): Boolean =
-        (attempt.number > 3 && matches.count() < 4) || (attempt.number == 4 && characters.inCorrectPositionCount() < 4)
+    private fun shouldConsiderOnlyMatches(characters: List<Character>, attempt: Attempt, matches: List<Word>): Boolean = with(attempt) {
+        when {
+            number <= 3 -> matches.count() + attempt.number <= 6
+            number == 4 -> characters.inCorrectPositionCount() < 4 || matches.count() < 4
+            else -> true
+        }
+    }
 
     private fun chooseWordWithUnusedCharacters(possibleWords: List<Word>, characters: List<Character>, matches: List<Word>): Guess =
         possibleWords

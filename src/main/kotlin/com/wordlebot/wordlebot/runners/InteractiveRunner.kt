@@ -37,7 +37,7 @@ class InteractiveRunner(
         do {
             input = readln().trim()
 
-            if (input == "q") {
+            if (input == "q" || input == ".....") {
                 onQuit()
             }
         } while (input.length != 5 || input.any { !listOf('x', '.', '?').contains(it) })

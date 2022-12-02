@@ -1,7 +1,5 @@
 package com.wordlebot.wordlebot.models
 
-import com.wordlebot.wordlebot.guesses.Guess
-
 data class Word(val value: String) {
     val chars: CharArray = value.toCharArray()
     val distinctChars: List<Char> = chars.distinct()
@@ -15,6 +13,11 @@ data class Word(val value: String) {
 
     fun containsAny(characters: List<Character>): Boolean =
         characters.map { it.value }.any(value::contains)
+
+    fun indexesOf(char: Char): List<Int> =
+        value.mapIndexedNotNull { index, c ->
+            if (char == c) index else null
+        }
 
     override fun toString(): String =
         value

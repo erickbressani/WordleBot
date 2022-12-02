@@ -2,6 +2,7 @@ package com.wordlebot.wordlebot.outcomes
 
 import com.wordlebot.wordlebot.models.Character
 import com.wordlebot.wordlebot.models.Word
+import com.wordlebot.wordlebot.models.findIfInTheAnswer
 import com.wordlebot.wordlebot.models.inTheAnswerPositions
 
 class OutcomeParser {
@@ -17,6 +18,27 @@ class OutcomeParser {
                 Outcome.NotInTheAnswer -> addNotInTheAnswer(char, index)
             }
         }
+
+        tryToDetermineCharactersOccurrences(guessedWord, outcomes)
+    }
+
+    private fun tryToDetermineCharactersOccurrences(guessedWord: Word, outcomes: List<Outcome>) {
+        guessedWord.chars
+            .associateWith { char -> guessedWord.indexesOf(char).map { outcomes[it] } }
+            .filter { it.value.size > 1 }
+            .also { charOutcomeMap ->
+                charOutcomeMap.keys
+                    .mapNotNull(characters::findIfInTheAnswer)
+                    .forEach { character ->
+                        charOutcomeMap[character.value]?.let { charOutcomes ->
+                            if (charOutcomes.hasAny(Outcome.NotInTheAnswer, Outcome.AtLeastInTheAnswer)) {
+                                val atLeastInTheAnswerCount = charOutcomes.count { it == Outcome.AtLeastInTheAnswer }
+                                val inTheCorrectPositionCount = charOutcomes.count { it == Outcome.InTheCorrectPosition }
+                                character.markRecurrenceInTheAnswer(inTheCorrectPositionCount + atLeastInTheAnswerCount)
+                            }
+                        }
+                    }
+            }
     }
 
     private fun addInTheCorrectPosition(char: Char, position: Int) {
@@ -86,5 +108,8 @@ enum class Outcome {
     AtLeastInTheAnswer,
     NotInTheAnswer
 }
+
+private fun List<Outcome>.hasAny(vararg outcomes: Outcome): Boolean =
+    any { outcomes.contains(it) }
 
 class InvalidCharactersInParserException : Exception("Invalid Characters In OutcomeParser")

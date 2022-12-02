@@ -52,15 +52,8 @@ class BatchTests {
 			}
 		}
 
-		val result = TestOutcome(pureLuckCount, correctCount)
-
-		(result == expectedTestOutcome) should {
-			if (!it) {
-				result.toCodeSnippet(batchNumber)
-			}
-
-			it shouldBe true
-		}
+//		println(correctCount)
+		TestOutcome(pureLuckCount, correctCount) shouldBe expectedTestOutcome
 	}
 
 	private fun List<Word>.getBatch(batchNumber: Int): List<Word> =

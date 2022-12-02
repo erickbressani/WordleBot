@@ -1,6 +1,6 @@
 package com.wordlebot.wordlebot.runners
 
-import com.wordlebot.wordlebot.models.toCodeSnippet
+import com.wordlebot.wordlebot.models.allToString
 import com.wordlebot.wordlebot.outcomes.OutcomeParser
 
 abstract class Runner(
@@ -18,7 +18,7 @@ abstract class Runner(
     fun printCharactersUsed() {
         if (printInConsole) {
             println("Characters Used:")
-            println(outcomeParser.getAllParsedCharacters().toCodeSnippet())
+            println(outcomeParser.getAllParsedCharacters().allToString())
         }
     }
 
