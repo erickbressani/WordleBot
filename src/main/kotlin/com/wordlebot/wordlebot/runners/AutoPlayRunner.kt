@@ -109,7 +109,7 @@ class AutoPlayRunner(
                 }
             }
 
-            print("$attempt - ${toString()} $ANSI_RESET - Possible Answers: ${this@print.allPossibleWords.count()}")
+            print("$attempt - ${toString()}$ANSI_RESET - Possible Answers: ${this@print.allPossibleWords.count()}")
         }
     }
 
