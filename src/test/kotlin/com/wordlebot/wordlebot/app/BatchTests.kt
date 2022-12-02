@@ -8,7 +8,6 @@ import com.wordlebot.wordlebot.models.Word
 import com.wordlebot.wordlebot.outcomes.OutcomeParser
 import com.wordlebot.wordlebot.runners.AutoPlayRunner
 import com.wordlebot.wordlebot.runners.Result
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
