@@ -6,8 +6,7 @@ import java.io.File
 class WordsFinder {
     companion object {
         fun get(): List<Word> =
-            File("/Users/erickbressani/Documents/git/erick/WordleBot/src/main/kotlin/com/wordlebot/WordleBot/app/wordle-words")
-                .bufferedReader()
+            this::class.java.classLoader.getResource("wordle-words")!!
                 .readText()
                 .split("\n")
                 .filter { it.isNotEmpty() }
